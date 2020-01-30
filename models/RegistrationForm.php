@@ -73,11 +73,16 @@ class RegistrationForm extends Model
     public function register()
     {
         if ($this->validate()) {
-        	$user = new User();
-        	$user->email = $this->email;
-        	$user->name = $this->name;
-        	$user->password = $user->generatePassword($this->password);
-        	return $user->save();
+			$user = new User();
+			$user->email = $this->email;
+			$user->name = $this->name;
+			$user->password = $user->generatePassword($this->password);
+			if ($user->save())
+			{
+				$dreamerRole = Yii::$app->getAuthManager()->getRole('dreamer');
+				Yii::$app->getAuthManager()->assign($dreamerRole, $user->getId());
+				return true;
+			}
         }
         return false;
     }
