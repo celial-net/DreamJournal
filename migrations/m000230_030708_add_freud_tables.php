@@ -5,7 +5,7 @@ use yii\db\Migration;
 /**
  * Class m0002_200130_030708_add_freud_tables
  */
-class m0002_200130_030708_add_freud_tables extends Migration
+class m000230_030708_add_freud_tables extends Migration
 {
     // Adds all of the freud tables which were added prior to migrations
     public function up()

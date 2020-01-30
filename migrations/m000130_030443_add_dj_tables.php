@@ -5,7 +5,7 @@ use yii\db\Migration;
 /**
  * Class m2001_30_030443_add_dj_tables
  */
-class m0001_200130_030443_add_dj_tables extends Migration
+class m000130_030443_add_dj_tables extends Migration
 {
     // Adds the DJ tables which existed prior to migrations.
     public function up()
