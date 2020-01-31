@@ -30,8 +30,7 @@ class Words:
             word_insert = """INSERT INTO word(word, search) VALUES( %s, %s )"""
             insert_cursor = self.cnx.cursor()
             insert_cursor.execute(word_insert, (lemmatized_word, stemmatized_word))
-            word_id = insert_cursor.getlastrowid()
-            self.cnx.commit()
+            word_id = insert_cursor.lastrowid
             insert_cursor.close()
             return word_id
 
