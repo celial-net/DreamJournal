@@ -1,6 +1,6 @@
 <?php
 
-require_once '../utilities/Settings.php';
+require_once __DIR__ . '/../utilities/Settings.php';
 
 return [
     'class' => 'yii\db\Connection',
