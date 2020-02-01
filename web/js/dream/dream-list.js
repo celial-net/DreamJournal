@@ -97,6 +97,7 @@ $(document).ready(function(){
 			//Get the form action
 			this.action = $vueData.data('action') || '';
 			this.searchOnLoad = $vueData.data('search-on-load') || 0;
+			this.resultsPerPage = $vueData.data('results-per-page') || 10;
 
 			if(this.searchOnLoad) {
 				this.search();

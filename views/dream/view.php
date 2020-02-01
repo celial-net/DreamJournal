@@ -3,6 +3,7 @@
 /** @var \app\models\dj\Dream $dream */
 /** @var \app\models\dj\DreamType[] $dreamTypes */
 /** @var bool $dreamTypesDisabled */
+/** @var int $resultsPerPage */
 ?>
 
 <div class="container">
@@ -92,7 +93,7 @@
 	<div class="row col-lg-12">
 		<div class="form-group">
 			<div>
-				<?=$this->renderFile('@app/views/dream/related.php', ['canFilter' => true, 'formAction' => '/search/related/' . $dream->getId(), 'searchOnLoad' => true])?>
+				<?=$this->renderFile('@app/views/dream/related.php', ['canFilter' => true, 'formAction' => '/search/related/' . $dream->getId(), 'searchOnLoad' => true, 'resultsPerPage' => $resultsPerPage])?>
 			</div>
 		</div>
 	</div>

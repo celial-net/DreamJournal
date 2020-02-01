@@ -11,12 +11,13 @@
 				/** @var bool $canFilter */
 				/** @var string $formAction */
 				/** @var bool $searchOnLoad */
-
+				/** @var int $resultsPerPage */
+				
 				echo $this->renderFile('@app/views/dream/dream-list.php', [
 					'canFilter' => true,
 					'formAction' => $formAction,
 					'searchOnLoad' => $searchOnLoad,
-					'resultsPerPage' => 5
+					'resultsPerPage' => $resultsPerPage
 				]);
 
 				?>

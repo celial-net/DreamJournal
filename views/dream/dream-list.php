@@ -2,13 +2,14 @@
 /** @var bool $canFilter */
 /** @var string $formAction */
 /** @var bool $searchOnLoad */
+/** @var int $resultsPerPage */
 ?>
 <div id="dream-list-app" class="col-lg-12" v-cloak>
 	<div
 		class="vue-data"
 		data-action="<?=$formAction?>"
 		data-search-on-load="<?=intval($searchOnLoad)?>"
-		data-results-per-page="10"
+		data-results-per-page="<?=intval($resultsPerPage)?>"
 		data-can-filter="<?=intval($canFilter)?>"
 	></div>
 	<?php

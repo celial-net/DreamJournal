@@ -78,6 +78,11 @@ class DreamController extends BaseController
     	$dreams = Dream::find()->orderBy('dreamt_at DESC')->whereUserId(Yii::$app->getUser()->getId());
 
 
+		$allActive = '';
+		$weekActive = '';
+		$monthActive = '';
+		$yearActive = '';
+
     	if($search)
 		{
 			//Limit to searched for dreams
@@ -171,7 +176,8 @@ class DreamController extends BaseController
 		return $this->render('related', [
 			'canFilter' => true,
 			'formAction' => '/search/related/' . $id,
-			'searchOnLoad' => 0
+			'searchOnLoad' => 0,
+			'resultsPerPage' => $this->getUser()->loadAccountSettings()->results_per_page
 		]);
 	}
 
@@ -201,7 +207,8 @@ class DreamController extends BaseController
         return $this->render('view', [
             'dream' => $this->findModel($id),
 			'dreamTypes' => DreamType::find()->excludeNormal()->all(),
-			'dreamTypesDisabled' => true
+			'dreamTypesDisabled' => true,
+			'resultsPerPage' => $this->getUser()->loadAccountSettings()->results_per_page
         ]);
     }
 
