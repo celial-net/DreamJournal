@@ -50,6 +50,15 @@ class AccountSettings extends \yii\db\ActiveRecord
         ];
     }
 
+    public function getDreamDateOptions(): array
+	{
+		return [
+			'blank' => 'Blank',
+			'current_day' => 'Current Day',
+			'previous_day' => 'Previous Day'
+		];
+	}
+
 	/**
 	 * @return UserQuery
 	 */

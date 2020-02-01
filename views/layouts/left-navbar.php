@@ -18,6 +18,7 @@
 				?>
 				<div class="dropdown-menu dropdown-menu-right">
 					<a href="#" class="dropdown-item"><?=Yii::$app->getUser()->getIdentity()->name ?? 'Anonymous'?>'s Profile</a>
+					<a href="/user/settings" class="dropdown-item">Account Settings</a>
 					<a href="/user/logout" class="dropdown-item">Log Out</a>
 				</div>
 				<?php
@@ -157,6 +158,7 @@ if(!Yii::$app->getUser()->getIsGuest())
 			<div class="dropdown-menu">
 				<a href="#" class="dropdown-item"><?= Yii::$app->getUser()->getIdentity()->name ?? 'Anonymous' ?>'s
 					Profile</a>
+				<a href="/user/settings" class="dropdown-item">Account Settings</a>
 				<a href="/user/logout" class="dropdown-item">Log Out</a>
 			</div>
 		</div>

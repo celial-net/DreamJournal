@@ -11,6 +11,7 @@ use app\components\gui\flash\IFlash;
 use app\models\dj\User;
 use yii\filters\AccessControl;
 use yii\web\Controller;
+use yii\web\Request;
 
 class BaseController extends Controller
 {
@@ -115,6 +116,16 @@ class BaseController extends Controller
 	public function getUser(): ?User
 	{
 		return \Yii::$app->getUser()->getIdentity();
+	}
+
+	/**
+	 * Gets the request if there is one.
+	 *
+	 * @return null|Request
+	 */
+	public function getRequest(): ?Request
+	{
+		return \Yii::$app->getRequest();
 	}
 
 	public function render($view, $params = [])

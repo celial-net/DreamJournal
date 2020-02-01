@@ -3,6 +3,7 @@
 namespace app\controllers;
 
 use app\components\gui\Breadcrumb;
+use app\components\gui\flash\Flash;
 use app\models\PasswordResetForm;
 use app\models\PasswordResetRequestForm;
 use Yii;
@@ -26,12 +27,13 @@ class UserController extends BaseController
                 'rules' => [
                 	[
                 		'allow' => true,
+						'actions' => ['contact', 'login', 'login', 'register', 'resetrequest', 'reset'],
 						'roles' => ['?', '@']
 					],
                     [
-                        'actions' => ['logout'],
-                        'allow' => false,
-                        'roles' => ['?'],
+                        'actions' => ['logout', 'settings'],
+                        'allow' => true,
+                        'roles' => ['@'],
                     ]
                 ]
             ]
@@ -103,6 +105,11 @@ class UserController extends BaseController
 	 */
     public function actionResetrequest()
 	{
+		if (!Yii::$app->user->isGuest)
+		{
+			return $this->goHome();
+		}
+
 		$this->addBreadcrumb(new Breadcrumb('Password Reset Request', '', true));
 
 		if (!Yii::$app->user->isGuest)
@@ -127,6 +134,11 @@ class UserController extends BaseController
 	 */
 	public function actionReset()
 	{
+		if (!Yii::$app->user->isGuest)
+		{
+			return $this->goHome();
+		}
+
 		$this->addBreadcrumb(new Breadcrumb('Password Reset', '', true));
 
 		if (!Yii::$app->user->isGuest)
@@ -154,6 +166,11 @@ class UserController extends BaseController
 
     public function actionRegister()
 	{
+		if (!Yii::$app->user->isGuest)
+		{
+			return $this->goHome();
+		}
+
 		$this->addBreadcrumb(new Breadcrumb('Register', '', true));
 
 		if (!Yii::$app->user->isGuest) {
@@ -169,6 +186,36 @@ class UserController extends BaseController
 		$model->password_verify = '';
 		return $this->render('register', [
 			'model' => $model,
+		]);
+	}
+
+	/**
+	 * Allows a user to view and update their account settings.
+	 */
+	public function actionSettings()
+	{
+		$this->addBreadcrumb(new Breadcrumb('Account Settings'));
+		$this->getView()->title = 'Account Settings';
+
+		$accountSettings = $this->getUser()->loadAccountSettings();
+
+		if($this->getRequest()->getIsPost())
+		{
+			if($accountSettings->load($this->getRequest()->post()))
+			{
+				if($accountSettings->save())
+				{
+					$this->addFlash(new Flash('Updated account settings.', Flash::SUCCESS));
+				}
+				else
+				{
+					$this->addFlash(new Flash('Failed to update account settings.', Flash::FAILURE));
+				}
+			}
+		}
+
+		return $this->render('account_settings', [
+			'accountSettings' => $accountSettings
 		]);
 	}
 
