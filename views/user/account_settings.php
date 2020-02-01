@@ -21,6 +21,8 @@
 
 			<?= $form->field($accountSettings, 'default_dream_date')->dropDownList($accountSettings->getDreamDateOptions()) ?>
 
+			<?= $form->field($accountSettings, 'default_dream_period')->dropDownList($accountSettings->getDreamPeriodOptions()) ?>
+
 			<div class="form-group col-12">
 				<?= \yii\helpers\Html::submitButton('Update', ['class' => 'btn btn-primary']) ?>
 			</div>

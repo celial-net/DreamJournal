@@ -11,6 +11,7 @@ use Yii;
  * @property int $user_id
  * @property int $results_per_page
  * @property string $default_dream_date
+ * @property string $default_dream_period
  *
  * @property User $user
  */
@@ -32,7 +33,7 @@ class AccountSettings extends \yii\db\ActiveRecord
         return [
             [['user_id'], 'required'],
             [['user_id', 'results_per_page'], 'integer'],
-            [['default_dream_date'], 'string'],
+            [['default_dream_date', 'default_dream_period'], 'string'],
             [['user_id'], 'exist', 'skipOnError' => true, 'targetClass' => User::className(), 'targetAttribute' => ['user_id' => 'id']],
         ];
     }
@@ -56,6 +57,16 @@ class AccountSettings extends \yii\db\ActiveRecord
 			'blank' => 'Blank',
 			'current_day' => 'Current Day',
 			'previous_day' => 'Previous Day'
+		];
+	}
+
+	public function getDreamPeriodOptions(): array
+	{
+		return [
+			'all' => 'All',
+			'week' => 'Week',
+			'month' => 'Month',
+			'year' => 'Year',
 		];
 	}
 
