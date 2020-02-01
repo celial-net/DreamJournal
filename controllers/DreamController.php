@@ -72,11 +72,6 @@ class DreamController extends BaseController
      */
     public function actionIndex(string $period = '', string $search = '')
     {
-		$allActive = '';
-		$weekActive = '';
-		$monthActive = '';
-		$yearActive = '';
-
 		$this->addActionItem(new ActionItem('New', '/dream/new', 'primary'));
 		$this->addBreadcrumb(new Breadcrumb('Overview', '', true));
 
@@ -94,7 +89,9 @@ class DreamController extends BaseController
 		}
 		else
 		{
-			$allActive = $period == '' ? 'active' : '';
+			$period = $period ?: $this->getUser()->loadAccountSettings()->default_dream_period;
+
+			$allActive = $period == 'all' ? 'active' : '';
 			$weekActive = $period == 'week' ? 'active' : '';
 			$monthActive = $period == 'month' ? 'active' : '';
 			$yearActive = $period == 'year' ? 'active' : '';

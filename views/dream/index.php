@@ -13,7 +13,7 @@
 		<div class="col-md-auto">
 			<ul class="nav nav-pills nav-small">
 				<li class="nav-item">
-					<a class="nav-link <?=$allActive?>" href="/dream">All</a>
+					<a class="nav-link <?=$allActive?>" href="/dream?period=all">All</a>
 				</li>
 				<li class="nav-item">
 					<a class="nav-link <?=$weekActive?>" href="/dream?period=week">Week</a>
