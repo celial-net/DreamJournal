@@ -1,11 +1,12 @@
 from freud import Freud
 import mysql.connector
 from words import Words
+from settings import Settings
 
 # Analyze all new dream content
 f = Freud()
 
-cnx = mysql.connector.connect(user='root', password='password', database='freud')
+cnx = mysql.connector.connect(user='root', password=Settings.get('db', 'password'), database='freud')
 # Get and process dreams
 cursor = cnx.cursor(buffered=True)
 

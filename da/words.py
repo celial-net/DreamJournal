@@ -1,12 +1,12 @@
 import mysql.connector
-
+from settings import Settings
 
 # Class is used for finding, adding, and processing words
 class Words:
     cnx = None
 
     def __init__(self):
-        self.cnx = mysql.connector.connect(user='root', password='password', database='freud')
+        self.cnx = mysql.connector.connect(user='root', password=Settings.get('db', 'password'), database='freud')
 
     # Processes a word and returns a (lemmatized, stemmatized) word pair or None on error
     def process(self, word):

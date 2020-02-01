@@ -1,6 +1,6 @@
 import mysql.connector
 from freud import Freud
-
+from settings import Settings
 
 # Jung searches for dreams and gives you answers
 class Jung:
@@ -70,7 +70,7 @@ ORDER BY
 LIMIT
     """ + str(page * limit) + ", " + str(limit)
 
-        cnx = mysql.connector.connect(user='root', password='password', database='freud')
+        cnx = mysql.connector.connect(user='root', password=Settings.get('db', 'password'), database='freud')
 
         # Get the paged dream results
         cursor = cnx.cursor()
