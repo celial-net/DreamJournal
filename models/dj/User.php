@@ -17,6 +17,8 @@ use yii\web\IdentityInterface;
  * @property string $password_reset_code
  * @property string|null $created_at
  * @property string|null $updated_at
+ *
+ * @property AccountSettings $accountSettings
  */
 class User extends \yii\db\ActiveRecord implements IdentityInterface
 {
@@ -165,5 +167,32 @@ class User extends \yii\db\ActiveRecord implements IdentityInterface
 	{
 		//What is this for?
 		return NULL;
+	}
+
+	/**
+	 * Gets the account settings for a user, creating new ones if none
+	 * currently exist.
+	 *
+	 * @return AccountSettings
+	 */
+	public function loadAccountSettings(): AccountSettings
+	{
+		$accountSettings = $this->accountSettings;
+		if(!$accountSettings)
+		{
+			$accountSettings = new AccountSettings();
+			$this->link('accountSettings', $accountSettings);
+			$this->save();
+		}
+
+		return $this->accountSettings;
+	}
+
+	/**
+	 * @return AccountSettingsQuery
+	 */
+	public function getAccountSettings()
+	{
+		return $this->hasOne(AccountSettings::class, ['user_id' => 'id']);
 	}
 }
