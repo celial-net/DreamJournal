@@ -8,6 +8,7 @@ use yii\widgets\ActiveForm;
 /* @var $form yii\widgets\ActiveForm */
 /** @var \app\models\dj\DreamType[] $dreamTypes */
 /** @var bool $dreamTypesDisabled */
+/** @var string $defaultDreamDate */
 ?>
 
 <div class="container">
@@ -23,12 +24,28 @@ use yii\widgets\ActiveForm;
 
 		<?= $form->field($dream, 'title')->textInput(['maxlength' => true]) ?>
 
-		<?= $form->field($dream, 'dreamt_at')->textInput([
+		<?php
+		$dreamDate = NULL;
+		if(isset($defaultDreamDate))
+		{
+			switch($defaultDreamDate)
+			{
+				case 'current_day':
+					$dreamDate = date('Y-m-d', time());
+					break;
+				case 'previous_day':
+					$dreamDate = date('Y-m-d', strtotime('-1 day'));
+					break;
+			}
+		}
+		echo $form->field($dream, 'dreamt_at')->textInput([
 			'class' => 'form-control flatpickr-input',
 			'data-flatpickr' => '',
 			'data-default-date' => '',
-			'data-alt-input' => 'true'
-		]) ?>
+			'data-alt-input' => 'true',
+			'value' => $dreamDate
+		]);
+		?>
 
 		<?= $form->field($dream, 'description')->textarea(['rows' => 12]) ?>
 

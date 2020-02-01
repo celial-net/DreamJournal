@@ -303,7 +303,8 @@ class DreamController extends BaseController
             'dream' => $dream,
 			'dreamTypes' => DreamType::find()->excludeNormal()->all(),
 			'dreamTypesDisabled' => false,
-			'categoryIdString' => ''
+			'categoryIdString' => '',
+			'defaultDreamDate' => $this->getUser()->loadAccountSettings()->default_dream_date
         ]);
     }
 
