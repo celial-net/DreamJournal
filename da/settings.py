@@ -1,14 +1,14 @@
 import json
+import os
 
 
 # Class used for getting settings from the settings.json file
 class Settings:
     @staticmethod
-    def get(self, *keys):
-        with open('../config/settings.json') as settings_file:
+    def get(*keys):
+        with open(os.path.dirname(os.path.realpath(__file__)) + '/../config/settings.json') as settings_file:
             settings = json.load(settings_file)
             for key in keys:
-                settings = settings[key] or None
-                if settings is None:
-                    return None
+                if key in settings:
+                    settings = settings[key]
             return settings
