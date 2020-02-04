@@ -2,10 +2,12 @@
 
 namespace app\controllers;
 
+use app\components\gui\ActionItem;
 use app\components\gui\Breadcrumb;
 use app\components\gui\flash\Flash;
 use app\models\PasswordResetForm;
 use app\models\PasswordResetRequestForm;
+use app\models\UserUpdateForm;
 use Yii;
 use yii\filters\AccessControl;
 use yii\web\NotFoundHttpException;
@@ -27,11 +29,11 @@ class UserController extends BaseController
                 'rules' => [
                 	[
                 		'allow' => true,
-						'actions' => ['contact', 'login', 'login', 'register', 'resetrequest', 'reset'],
+						'actions' => ['contact', 'login', 'login', 'register', 'resetrequest', 'reset', 'error'],
 						'roles' => ['?', '@']
 					],
                     [
-                        'actions' => ['logout', 'settings'],
+                        'actions' => ['logout', 'settings', 'profile'],
                         'allow' => true,
                         'roles' => ['@'],
                     ]
@@ -216,6 +218,41 @@ class UserController extends BaseController
 
 		return $this->render('account_settings', [
 			'accountSettings' => $accountSettings
+		]);
+	}
+
+	public function actionProfile()
+	{
+		$this->addBreadcrumb(new Breadcrumb('Profile'));
+		$this->getView()->title = 'Profile';
+		$this->addActionItem(new ActionItem('Account Settings', '/user/settings', 'primary'));
+
+		$userUpdateForm = new UserUpdateForm();
+		$userUpdateForm->name = $this->getUser()->name;
+		$userUpdateForm->email = $this->getUser()->email;
+
+		if($this->getRequest()->getIsPost())
+		{
+			$userUpdateForm->load($this->getRequest()->post());
+			if($userUpdateForm->update())
+			{
+				$this->addFlash(new Flash('Successfully updated proflie information', Flash::SUCCESS));
+			}
+			else
+			{
+				foreach($userUpdateForm->getFirstErrors() as $error)
+				{
+					$this->addFlash(new Flash($error, Flash::FAILURE));
+				}
+			}
+		}
+
+		$userUpdateForm->current_password = '';
+		$userUpdateForm->new_password = '';
+		$userUpdateForm->new_password_verify = '';
+
+		return $this->render('profile', [
+			'userUpdateForm' => $userUpdateForm
 		]);
 	}
 

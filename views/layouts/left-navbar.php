@@ -17,7 +17,7 @@
 				{
 				?>
 				<div class="dropdown-menu dropdown-menu-right">
-					<a href="#" class="dropdown-item"><?=Yii::$app->getUser()->getIdentity()->name ?? 'Anonymous'?>'s Profile</a>
+					<a href="/user/profile" class="dropdown-item"><?=Yii::$app->getUser()->getIdentity()->name ?? 'Anonymous'?>'s Profile</a>
 					<a href="/user/settings" class="dropdown-item">Account Settings</a>
 					<a href="/user/logout" class="dropdown-item">Log Out</a>
 				</div>
@@ -156,8 +156,7 @@ if(!Yii::$app->getUser()->getIsGuest())
 				<img alt="Image" src="/dist/assets/img/avatar-male-4.jpg" class="avatar"/>
 			</a>
 			<div class="dropdown-menu">
-				<a href="#" class="dropdown-item"><?= Yii::$app->getUser()->getIdentity()->name ?? 'Anonymous' ?>'s
-					Profile</a>
+				<a href="/user/profile" class="dropdown-item"><?= Yii::$app->getUser()->getIdentity()->name ?? 'Anonymous' ?>'s Profile</a>
 				<a href="/user/settings" class="dropdown-item">Account Settings</a>
 				<a href="/user/logout" class="dropdown-item">Log Out</a>
 			</div>
