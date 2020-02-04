@@ -156,10 +156,7 @@ class Dream extends \yii\db\ActiveRecord
 
     public function getFormattedDate(): string
 	{
-		return date('M d, Y', strtotime($this->dreamt_at));
-
-		//This is broken for dates ending with 00-00-00 as Yii says they are the day before when PHP strtotime function doesn't.
-		//return Yii::$app->getFormatter()->asDate($this->dreamt_at);
+		return Yii::$app->getFormatter()->asDate(new \DateTime($this->dreamt_at));
 	}
 
 	/**
