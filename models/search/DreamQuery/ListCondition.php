@@ -49,4 +49,17 @@ class ListCondition extends Condition
 			return $sql;
 		}
 	}
+
+	public function getParams(): array
+	{
+		$params = [];
+		foreach($this->getConditions() as $condition)
+		{
+			foreach($condition->getParams() as $param => $value)
+			{
+				$params[$param] = $value;
+			}
+		}
+		return $params;
+	}
 }

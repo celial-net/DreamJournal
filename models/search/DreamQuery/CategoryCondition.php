@@ -1,27 +1,28 @@
 <?php
 
+
 namespace app\models\search\DreamQuery;
 
 /**
- * Class TypeCondition
+ * Class CategoryCondition
  *
- * Searches for or excluded dream types.
+ * Searches for or excluded dream categories.
  *
  * @package app\models\search\DreamQuery
  */
-class TypeCondition extends QueryCondition
+class CategoryCondition extends QueryCondition
 {
 	/**
-	 * Generates the SQL to include or exclude specific dream types.
+	 * Generates the SQL to include or exclude specific dream categories.
 	 *
 	 * Examples:
-	 * AND dreamType.id = 10
-	 * OR dreamType.id != 5
+	 * AND dreamCat.id = 10
+	 * OR dreamCat.id != 5
 	 * @return string
 	 */
 	public function getSql(): string
 	{
-		return $this->getOperator() . ' dreamType.id ' . $this->getSqlQueryOperator() . ' ' . $this->addParam($this->getValue());
+		return $this->getOperator() . ' dreamCat.id ' . $this->getSqlQueryOperator() . ' ' . $this->addParam($this->getValue());
 	}
 
 	/**

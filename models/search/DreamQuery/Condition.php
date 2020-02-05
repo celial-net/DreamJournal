@@ -46,4 +46,11 @@ abstract class Condition
 	 * @return string
 	 */
 	abstract public function getSql(): string;
+
+	/**
+	 * Keeps track of all parameters used in the query.
+	 *
+	 * @return array
+	 */
+	abstract public function getParams(): array;
 }

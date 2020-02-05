@@ -8,12 +8,15 @@ namespace app\models\search\DreamQuery;
  * Base class for all single conditions used to build queries
  * and which can have custom values and operators set.
  *
- * @TODO: Use parameterization.
+ * @TODO: Use paramaterization.
  *
  * @package app\models\search\DreamQuery
  */
 abstract class QueryCondition extends Condition
 {
+	/** @var int $paramCount Keeps track of all SQL parameters used. */
+	private static $paramCount = 0;
+
 	// Query operators
 	const OPERATOR_EQUALS = 'is';
 	const OPERATOR_NOT_EQUALS = 'is not';
@@ -23,7 +26,12 @@ abstract class QueryCondition extends Condition
 
 	/** @var string $value The value to search for. */
 	private $value;
+
+	/** @var  string $queryOperator The operator used in the query condition. */
 	private $queryOperator;
+
+	/** @var  array $params The SQL params */
+	private $params = [];
 
 	public function __construct(string $value, string $queryOperator)
 	{
@@ -93,6 +101,29 @@ abstract class QueryCondition extends Condition
 			self::OPERATOR_NOT_LIKE => 'NOT LIKE'
 		];
 		return $operatorMappings[$this->getQueryOperator()];
+	}
+
+	/**
+	 * Adds a SQL paramaterized value.
+	 *
+	 * @param string $value
+	 * @return string The param name for use in SQL.
+	 */
+	protected function addParam(string $value): string
+	{
+		$param = 'dreamQueryParam_' . self::$paramCount++;
+		$this->params[$param] = $value;
+		return $param;
+	}
+
+	/**
+	 * Gets the SQL params.
+	 *
+	 * @return array
+	 */
+	public function getParams(): array
+	{
+		return $this->params;
 	}
 
 	/**
