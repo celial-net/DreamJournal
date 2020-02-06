@@ -40,13 +40,20 @@ class ListCondition extends Condition
 		}
 		else
 		{
-			$sql = $this->getOperator() . ' (';
+			$sql = '';
 			foreach($this->conditions as $condition)
 			{
 				$sql .= $condition->getSql();
 			}
-			$sql .= ')';
-			return $sql;
+
+			if($sql)
+			{
+				return $this->getOperator() . ' (' . $sql . ')';
+			}
+			else
+			{
+				return '';
+			}
 		}
 	}
 

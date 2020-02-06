@@ -21,7 +21,33 @@ class TypeCondition extends QueryCondition
 	 */
 	public function getSql(): string
 	{
-		return $this->getOperator() . ' dreamType.id ' . $this->getSqlQueryOperator() . ' ' . $this->addParam($this->getValue());
+		$type = trim($this->getValue());
+		if($type)
+		{
+			$not = "";
+			if($this->getSqlQueryOperator() == self::OPERATOR_NOT_EQUALS)
+			{
+				return $not = "NOT ";
+			}
+
+			$typeParam = $this->addParam($type);
+			return $this->getOperator() . " " . $not . "EXISTS(
+	SELECT
+		type.id 
+	FROM
+		dj.dream_type type
+	INNER JOIN
+		dj.dream_to_dream_type dream2type ON dream2type.type = type.id
+	WHERE
+		dream2type.dream_id = dream.id
+		AND type.id = {$typeParam}
+)
+			";
+		}
+		else
+		{
+			return '';
+		}
 	}
 
 	/**
