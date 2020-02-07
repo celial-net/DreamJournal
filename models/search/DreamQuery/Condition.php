@@ -41,6 +41,20 @@ abstract class Condition
 	}
 
 	/**
+	 * Gets the condition(s) within a new list.
+	 *
+	 * @return ListCondition
+	 */
+	public function toList(): ListCondition
+	{
+		$listCondition = new ListCondition();
+		$listCondition->setOperator($this->getOperator());
+		$this->setOperator('');
+		$listCondition->addCondition($this);
+		return $listCondition;
+	}
+
+	/**
 	 * Takes the condition and represents in SQL for querying.
 	 *
 	 * @return string

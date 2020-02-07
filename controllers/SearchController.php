@@ -11,6 +11,7 @@ use app\models\search\DreamQuery\CategoryCondition;
 use app\models\search\DreamQuery\Condition;
 use app\models\search\DreamQuery\DreamQuery;
 use app\models\search\DreamQuery\DreamTextCondition;
+use app\models\search\DreamQuery\ListCondition;
 use app\models\search\DreamQuery\QueryCondition;
 use app\models\search\DreamQuery\TypeCondition;
 use Rhumsaa\Uuid\Uuid;
@@ -148,38 +149,51 @@ class SearchController extends BaseController
 
 	public function actionDreamquery()
 	{
-		$dreamQuery = new DreamQuery();
+		try {
+			$dreamQuery = new DreamQuery();
 
-		$lucidType = DreamType::find()->where(['name' => 'Lucid'])->one();
-		$typeCondition = new TypeCondition($lucidType->getId(), QueryCondition::OPERATOR_EQUALS);
-		$typeCondition->setOperator(QueryCondition::CONDITION_AND);
-		$dreamQuery->addCondition($typeCondition);
+			$lucidType = DreamType::find()->where(['name' => 'Lucid'])->one();
+			$typeCondition = new TypeCondition($lucidType->getId(), QueryCondition::OPERATOR_EQUALS);
+			$typeCondition->setOperator(QueryCondition::CONDITION_AND);
+			$dreamQuery->addCondition($typeCondition);
 
-		$recurrentType = DreamType::find()->where(['name' => 'Recurrent'])->one();
-		$typeCondition = new TypeCondition($recurrentType->getId(), QueryCondition::OPERATOR_EQUALS);
-		$typeCondition->setOperator(QueryCondition::CONDITION_OR);
-		//$dreamQuery->addCondition($typeCondition);
+			$recurrentType = DreamType::find()->where(['name' => 'Recurrent'])->one();
+			$typeCondition = new TypeCondition($recurrentType->getId(), QueryCondition::OPERATOR_EQUALS);
+			$typeCondition->setOperator(QueryCondition::CONDITION_OR);
+			//$dreamQuery->addCondition($typeCondition);
 
-		$animalCat = DreamCategory::find()->where(['name' => 'Animals'])->one();
-		$catCondition = new CategoryCondition($animalCat->getId(), QueryCondition::OPERATOR_EQUALS);
-		$dreamQuery->addCondition($catCondition);
+			$animalCat = DreamCategory::find()->where(['name' => 'Animals'])->one();
+			$catCondition = new CategoryCondition($animalCat->getId(), QueryCondition::OPERATOR_EQUALS);
+			$dreamQuery->addCondition($catCondition);
 
-		$lucidWord = "Sheldon";
-		$wordCondition = new DreamTextCondition($lucidWord, DreamTextCondition::OPERATOR_NOT_LIKE);
-		$dreamQuery->addCondition($wordCondition);
+			$lucidWord = "Sheldon";
+			$wordCondition = new DreamTextCondition($lucidWord, DreamTextCondition::OPERATOR_NOT_LIKE);
+			$dreamQuery->addCondition($wordCondition);
 
-		$lucidPhrase = "'Lucid Dream Test'";
-		$wordCondition = new DreamTextCondition($lucidPhrase, DreamTextCondition::OPERATOR_NOT_LIKE);
-		$dreamQuery->addCondition($wordCondition);
+			$lucidPhrase = "'Lucid Dream Test'";
+			$wordCondition = new DreamTextCondition($lucidPhrase, DreamTextCondition::OPERATOR_NOT_LIKE);
+			$dreamQuery->addCondition($wordCondition);
 
-		$dreams = $dreamQuery->query();
-		print "<b>Dreams</b>";
-		print "<pre>";
-		foreach($dreams as $dream)
-		{
-			print $dream->getId() . "\n";
+			$listCondition = $dreamQuery->getCondition()->toList();
+			$sheldonCondition = new DreamTextCondition('Sheldon', DreamTextCondition::OPERATOR_LIKE);
+			$sheldonCondition->setOperator(DreamTextCondition::CONDITION_OR);
+			$listCondition->addCondition($sheldonCondition);
+			$dreamQuery->setCondition($listCondition);
+
+			ob_start();
+			$dreams = $dreamQuery->query();
+			print "<b>Dreams</b><br>";
+			foreach ($dreams as $dream)
+			{
+				print '<a href="/dream/view/' . $dream->getId() . '">' . $dream->getTitle() . '</a><br>';
+			}
+			$data = ob_get_clean();
+			return $data;
 		}
-		print "</pre>";
+		catch(\Exception $e)
+		{
+			die($e->getMessage());
+		}
 	}
 
 	protected function findDream($id): Dream
