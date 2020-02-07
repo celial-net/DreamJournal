@@ -10,7 +10,7 @@ abstract class Condition
 	const CONDITION_OPERATORS = [self::CONDITION_OR, self::CONDITION_AND];
 
 	/** @var  string $operator 'AND'|'OR'|'' */
-	private $operator = '';
+	private $operator = self::CONDITION_AND;
 
 	/**
 	 * Sets the operator to AND, OR, or the empty string.

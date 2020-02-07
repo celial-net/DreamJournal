@@ -5,6 +5,7 @@ namespace app\models\search\DreamQuery;
 
 
 use app\models\dj\Dream;
+use app\utilities\SqlFormatter;
 
 class DreamQuery
 {
@@ -51,7 +52,8 @@ class DreamQuery
 					{$conditionSql}
 			";
 			print "<pre>";
-			print $sql;
+			print SqlFormatter::format($sql);
+			print_r($this->condition->getParams());
 			print "</pre>";
 			return Dream::findBySql($sql, $this->condition->getParams())->all();
 		}

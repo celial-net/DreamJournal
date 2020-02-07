@@ -26,9 +26,9 @@ class CategoryCondition extends QueryCondition
 		if($cat)
 		{
 			$not = "";
-			if($this->getSqlQueryOperator() == self::OPERATOR_NOT_EQUALS)
+			if($this->getQueryOperator() == self::OPERATOR_NOT_EQUALS)
 			{
-				return $not = "NOT ";
+				$not = "NOT ";
 			}
 
 			$catParam = $this->addParam($cat);

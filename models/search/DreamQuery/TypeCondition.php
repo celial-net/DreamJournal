@@ -25,9 +25,9 @@ class TypeCondition extends QueryCondition
 		if($type)
 		{
 			$not = "";
-			if($this->getSqlQueryOperator() == self::OPERATOR_NOT_EQUALS)
+			if($this->getQueryOperator() == self::OPERATOR_NOT_EQUALS)
 			{
-				return $not = "NOT ";
+				$not = "NOT ";
 			}
 
 			$typeParam = $this->addParam($type);

@@ -4,10 +4,13 @@ namespace app\controllers;
 
 use app\components\gui\Breadcrumb;
 use app\models\dj\Dream;
+use app\models\dj\DreamCategory;
 use app\models\dj\DreamType;
 use app\models\search\DreamForm;
+use app\models\search\DreamQuery\CategoryCondition;
 use app\models\search\DreamQuery\Condition;
 use app\models\search\DreamQuery\DreamQuery;
+use app\models\search\DreamQuery\DreamTextCondition;
 use app\models\search\DreamQuery\QueryCondition;
 use app\models\search\DreamQuery\TypeCondition;
 use Rhumsaa\Uuid\Uuid;
@@ -151,6 +154,23 @@ class SearchController extends BaseController
 		$typeCondition = new TypeCondition($lucidType->getId(), QueryCondition::OPERATOR_EQUALS);
 		$typeCondition->setOperator(QueryCondition::CONDITION_AND);
 		$dreamQuery->addCondition($typeCondition);
+
+		$recurrentType = DreamType::find()->where(['name' => 'Recurrent'])->one();
+		$typeCondition = new TypeCondition($recurrentType->getId(), QueryCondition::OPERATOR_EQUALS);
+		$typeCondition->setOperator(QueryCondition::CONDITION_OR);
+		//$dreamQuery->addCondition($typeCondition);
+
+		$animalCat = DreamCategory::find()->where(['name' => 'Animals'])->one();
+		$catCondition = new CategoryCondition($animalCat->getId(), QueryCondition::OPERATOR_EQUALS);
+		$dreamQuery->addCondition($catCondition);
+
+		$lucidWord = "Sheldon";
+		$wordCondition = new DreamTextCondition($lucidWord, DreamTextCondition::OPERATOR_NOT_LIKE);
+		$dreamQuery->addCondition($wordCondition);
+
+		$lucidPhrase = "'Lucid Dream Test'";
+		$wordCondition = new DreamTextCondition($lucidPhrase, DreamTextCondition::OPERATOR_NOT_LIKE);
+		$dreamQuery->addCondition($wordCondition);
 
 		$dreams = $dreamQuery->query();
 		print "<b>Dreams</b>";

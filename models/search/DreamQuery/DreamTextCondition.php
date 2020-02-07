@@ -28,7 +28,7 @@ class DreamTextCondition extends QueryCondition
 			{
 				//Search for an exact phrase
 				$word = trim($word, '"\'');
-				return $this->getOperator() . " CONCAT(dream.title, ' ', dream.description) " . $this->getQueryOperator() . $this->addParam('%' . $word . '%');
+				return $this->getOperator() . " CONCAT(dream.title, ' ', dream.description) " . $this->getSqlQueryOperator() . ' ' .  $this->addParam('%' . $word . '%');
 			}
 			else
 			{
@@ -45,9 +45,9 @@ class DreamTextCondition extends QueryCondition
 					if($wordModel)
 					{
 						$not = "";
-						if($this->getSqlQueryOperator() == self::OPERATOR_NOT_LIKE)
+						if($this->getQueryOperator() == self::OPERATOR_NOT_LIKE)
 						{
-							return $not = "NOT ";
+							$not = "NOT ";
 						}
 
 						$wordParam = $this->addParam($wordModel->id);

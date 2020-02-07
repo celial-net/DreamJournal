@@ -32,6 +32,7 @@ class Words:
             insert_cursor.execute(word_insert, (lemmatized_word, stemmatized_word))
             word_id = insert_cursor.lastrowid
             insert_cursor.close()
+            self.cnx.commit()
             return word_id
 
     # Returns the id of a word or None if none is found
