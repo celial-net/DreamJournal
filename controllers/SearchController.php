@@ -4,7 +4,12 @@ namespace app\controllers;
 
 use app\components\gui\Breadcrumb;
 use app\models\dj\Dream;
+use app\models\dj\DreamType;
 use app\models\search\DreamForm;
+use app\models\search\DreamQuery\Condition;
+use app\models\search\DreamQuery\DreamQuery;
+use app\models\search\DreamQuery\QueryCondition;
+use app\models\search\DreamQuery\TypeCondition;
 use Rhumsaa\Uuid\Uuid;
 use yii\web\NotFoundHttpException;
 
@@ -136,6 +141,25 @@ class SearchController extends BaseController
 		return $this->render('search', [
 			'dreams' => $dreams
 		]);
+	}
+
+	public function actionDreamquery()
+	{
+		$dreamQuery = new DreamQuery();
+
+		$lucidType = DreamType::find()->where(['name' => 'Lucid'])->one();
+		$typeCondition = new TypeCondition($lucidType->getId(), QueryCondition::OPERATOR_EQUALS);
+		$typeCondition->setOperator(QueryCondition::CONDITION_AND);
+		$dreamQuery->addCondition($typeCondition);
+
+		$dreams = $dreamQuery->query();
+		print "<b>Dreams</b>";
+		print "<pre>";
+		foreach($dreams as $dream)
+		{
+			print $dream->getId() . "\n";
+		}
+		print "</pre>";
 	}
 
 	protected function findDream($id): Dream

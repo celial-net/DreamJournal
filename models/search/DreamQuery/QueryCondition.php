@@ -111,7 +111,7 @@ abstract class QueryCondition extends Condition
 	 */
 	protected function addParam(string $value): string
 	{
-		$param = 'dreamQueryParam_' . self::$paramCount++;
+		$param = ':dreamQueryParam_' . self::$paramCount++;
 		$this->params[$param] = $value;
 		return $param;
 	}

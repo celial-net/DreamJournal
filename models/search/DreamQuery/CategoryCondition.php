@@ -34,14 +34,12 @@ class CategoryCondition extends QueryCondition
 			$catParam = $this->addParam($cat);
 			return $this->getOperator() . " " . $not . "EXISTS(
 	SELECT
-		cat.id 
+		1 
 	FROM
-		dj.dream_category cat
-	INNER JOIN
-		dj.dream_to_dream_category dream2cat ON dream2cat.category_id = cat.id
+		dj.dream_to_dream_category dream2cat
 	WHERE
 		dream2cat.dream_id = dream.id
-		AND cat.id = {$catParam}
+		AND dream2cat.category_id = {$catParam}
 )
 			";
 		}

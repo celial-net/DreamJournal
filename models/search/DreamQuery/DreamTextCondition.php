@@ -62,6 +62,10 @@ class DreamTextCondition extends QueryCondition
 )
 						";
 					}
+					else
+					{
+						return '';
+					}
 				}
 				else
 				{

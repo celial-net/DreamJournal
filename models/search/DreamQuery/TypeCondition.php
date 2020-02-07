@@ -33,14 +33,12 @@ class TypeCondition extends QueryCondition
 			$typeParam = $this->addParam($type);
 			return $this->getOperator() . " " . $not . "EXISTS(
 	SELECT
-		type.id 
+		1
 	FROM
-		dj.dream_type type
-	INNER JOIN
-		dj.dream_to_dream_type dream2type ON dream2type.type = type.id
+		dj.dream_to_dream_type dream2type
 	WHERE
 		dream2type.dream_id = dream.id
-		AND type.id = {$typeParam}
+		AND dream2type.type_id = {$typeParam}
 )
 			";
 		}
