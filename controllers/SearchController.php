@@ -6,8 +6,10 @@ use app\components\gui\Breadcrumb;
 use app\models\dj\Dream;
 use app\models\dj\DreamCategory;
 use app\models\dj\DreamType;
+use app\models\freud\Concept;
 use app\models\search\DreamForm;
 use app\models\search\DreamQuery\CategoryCondition;
+use app\models\search\DreamQuery\ConceptCondition;
 use app\models\search\DreamQuery\Condition;
 use app\models\search\DreamQuery\DreamQuery;
 use app\models\search\DreamQuery\DreamTextCondition;
@@ -178,7 +180,11 @@ class SearchController extends BaseController
 			$sheldonCondition = new DreamTextCondition('Sheldon', DreamTextCondition::OPERATOR_LIKE);
 			$sheldonCondition->setOperator(DreamTextCondition::CONDITION_OR);
 			$listCondition->addCondition($sheldonCondition);
-			$dreamQuery->setCondition($listCondition);
+			$dreamQuery->setCondition($listCondition->toList());
+
+			$flyingConcept = Concept::find()->name('Flying')->one();
+			$flyingCondition = new ConceptCondition($flyingConcept->id, QueryCondition::OPERATOR_EQUALS);
+			$dreamQuery->addCondition($flyingCondition);
 
 			ob_start();
 			$dreams = $dreamQuery->query();

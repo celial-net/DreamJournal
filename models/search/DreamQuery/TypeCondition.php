@@ -14,9 +14,6 @@ class TypeCondition extends QueryCondition
 	/**
 	 * Generates the SQL to include or exclude specific dream types.
 	 *
-	 * Examples:
-	 * AND dreamType.id = 10
-	 * OR dreamType.id != 5
 	 * @return string
 	 */
 	public function getSql(): string

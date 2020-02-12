@@ -3,24 +3,18 @@
 
 namespace app\models\search\DreamQuery;
 
-/**
- * Class CategoryCondition
- *
- * Searches for or excluded dream categories.
- *
- * @package app\models\search\DreamQuery
- */
-class CategoryCondition extends QueryCondition
+
+class ConceptCondition extends QueryCondition
 {
 	/**
-	 * Generates the SQL to include or exclude specific dream categories.
+	 * Generates the SQL to include or exclude specific dream concepts.
 	 *
 	 * @return string
 	 */
 	public function getSql(): string
 	{
-		$cat = trim($this->getValue());
-		if($cat)
+		$conceptId = trim($this->getValue());
+		if($conceptId)
 		{
 			$not = "";
 			if($this->getQueryOperator() == self::OPERATOR_NOT_EQUALS)
@@ -28,15 +22,19 @@ class CategoryCondition extends QueryCondition
 				$not = "NOT ";
 			}
 
-			$catParam = $this->addParam($cat);
+			$conceptParam = $this->addParam($conceptId);
 			return $this->getOperator() . " " . $not . "EXISTS(
 	SELECT
-		1 
+		1
 	FROM
-		dj.dream_to_dream_category dream2cat
+		freud.concept
+	INNER JOIN
+		freud.word_to_concept w2c ON w2c.concept_id = concept.id
+	INNER JOIN
+		freud.dream_word_freq dwf ON dwf.word_id = w2c.word_id
 	WHERE
-		dream2cat.dream_id = dream.id
-		AND dream2cat.category_id = {$catParam}
+		dwf.dream_id = dream.id
+		AND concept.id = {$conceptParam}
 )
 			";
 		}

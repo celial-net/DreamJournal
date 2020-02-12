@@ -9,10 +9,10 @@ namespace app\models\freud;
  */
 class ConceptQuery extends \yii\db\ActiveQuery
 {
-    /*public function active()
+    public function name(string $name)
     {
-        return $this->andWhere('[[status]]=1');
-    }*/
+        return $this->andWhere(['name' => $name]);
+    }
 
     /**
      * {@inheritdoc}

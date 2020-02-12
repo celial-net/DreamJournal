@@ -33,7 +33,8 @@ async def handle_request(reader, writer):
             if len(tokens) > 0:
                 token = tokens[0]
                 words = Words()
-                words.add_lemmatized_word(token[0], token[1])
+                if words.get_lemmatized_word(token[0]) is None:
+               		words.add_lemmatized_word(token[0], token[1])
                 response = {
                     'code': 200,
                     'error': None,
