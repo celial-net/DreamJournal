@@ -183,7 +183,7 @@ class SearchController extends BaseController
 			$dreamQuery->setCondition($listCondition->toList());
 
 			$flyingConcept = Concept::find()->name('Flying')->one();
-			$flyingCondition = new ConceptCondition($flyingConcept->id, QueryCondition::OPERATOR_EQUALS);
+			$flyingCondition = new ConceptCondition($flyingConcept->id, QueryCondition::OPERATOR_NOT_EQUALS);
 			$dreamQuery->addCondition($flyingCondition);
 
 			ob_start();
