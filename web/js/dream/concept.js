@@ -3,8 +3,7 @@ $(document).ready(function(){
 		el: '#concept-word-list-app',
 		data: {
 			words: [],
-			certainty: 1,
-			deletedWords: []
+			certainty: 1
 		},
 		mounted: function () {
 			let self = this;
@@ -56,10 +55,7 @@ $(document).ready(function(){
 			},
 
 			deleteWord: function(wordId) {
-				this.deletedWords.push({
-					id: wordId
-				});
-				$('#ConceptWord_' + wordId).parent().parent().remove();
+				$('#ConceptWord_' + wordId).closest('tr').remove();
 			}
 		}
 	});

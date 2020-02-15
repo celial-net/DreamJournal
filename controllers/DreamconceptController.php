@@ -164,12 +164,19 @@ class DreamconceptController extends BaseController
 
 			//$this->pre($post, true);
 
-			$conceptWords = $post['Concept']['words'] ?? '';
+			$model->unlinkAll('words', true);
+			$conceptWords = $post['Concept']['word'] ?? [];
 			if($conceptWords)
 			{
-				$model->unlinkAll('words', true);
-				foreach($conceptWords as $conceptWord)
+				foreach($conceptWords as $wordInfo)
 				{
+					$conceptWord = trim($wordInfo['word'] ?? '');
+					$certainty = floatval($wordInfo['certainty'] ?? NULL);
+					if(!$certainty)
+					{
+						$certainty = 1;
+					}
+
 					$word = Word::find()->word($conceptWord)->one();
 					if(!$word)
 					{
@@ -191,7 +198,9 @@ class DreamconceptController extends BaseController
 
 					if($word)
 					{
-						$model->link('words', $word);
+						$model->link('words', $word, [
+							'certainty' => $certainty
+						]);
 					}
 				}
 			}

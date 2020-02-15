@@ -8,8 +8,7 @@ $(document).ready(function(){
 			buttonTitle: '',
 			commentId: '',
 			mode: '', // new|edit
-			comments: [],
-			deletedComments: []
+			comments: []
 		},
 		mounted: function () {
 			let self = this;

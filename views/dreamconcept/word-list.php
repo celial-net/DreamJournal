@@ -22,7 +22,7 @@ use yii\web\JsExpression;
 								<?php
 								echo Select2::widget([
 									'id' => 'concept_words',
-									'name' => 'Concept[words]',
+									'name' => '_Concept[words]',
 									'maintainOrder' => true,
 									'data' => '',
 									'value' => '',
@@ -67,30 +67,33 @@ use yii\web\JsExpression;
 	?>
 
 	<div class="concept concept-words">
-		<div class="deleted">
-			<input v-for="deleted in deletedWords" type="hidden" :name="'Concept[word][deleted][' + deleted.id + ']'" value="1" />
-		</div>
-
-		<div v-for="word in words" class="dream comment row">
-			<div class="col-lg-8">
-				<b>{{ word.word }}</b>
-			</div>
-			<div class="col-lg-4">
-				<i>{{ word.certainty }}</i>
-			</div>
-			<?php
-			if($editable)
-			{
-				?>
-				<div class="col-lg-12">
-					<input type="hidden" :name="'Concept[word][' + word.id + ']'" :value="word.word" :id="'ConceptWord_' + word.id" />
-					<input type="hidden" :name="'Concept[word][' + word.id + ']'" :value="word.certainty" :id="'ConceptWord_' + word.id + '_certainty'" />
-					<button type="button" class="btn btn-sm btn-danger" v-on:click="deleteWord(word.id)">Delete</button>
-				</div>
-				<?php
-			}
-			?>
-		</div>
+		<table class="table table-striped table-bordered detail-view">
+			<tbody>
+				<tr>
+					<th>Word</th>
+					<th>Weight</th>
+					<?=$editable ? '<th>Action</th>' : ''?>
+				</tr>
+				<tr v-for="word in words">
+					<td>{{ word.word }}</td>
+					<td>{{ word.certainty }}</td>
+					<?php
+					if($editable)
+					{
+						?>
+						<td>
+							<div class="col-lg-12">
+								<input type="hidden" :name="'Concept[word][' + word.id + '][word]'" :value="word.word" :id="'ConceptWord_' + word.id" />
+								<input type="hidden" :name="'Concept[word][' + word.id + '][certainty]'" :value="word.certainty" :id="'ConceptWord_' + word.id + '_certainty'" />
+								<button type="button" class="btn btn-sm btn-danger" v-on:click="deleteWord(word.id)">Delete</button>
+							</div>
+						</td>
+						<?php
+					}
+					?>
+				</tr>
+			</tbody>
+		</table>
 	</div>
 	<!-- Button trigger modal -->
 	<?php
