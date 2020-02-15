@@ -102,33 +102,54 @@ class DreamconceptController extends BaseController
 		if($request->getIsPost())
 		{
 			$post = Yii::$app->request->post();
-			$model = new Concept();
 			$model->load($post);
 
 			if($model->save())
 			{
-				$wordIds = $post['Concept']['words'] ?? '';
-				if($wordIds)
+				$conceptWords = $post['Concept']['word'] ?? [];
+				if($conceptWords)
 				{
-					foreach($wordIds as $wordId)
+					foreach($conceptWords as $wordInfo)
 					{
-						$word = Word::find()->andWhere(['id' => $wordId])->one();
+						$conceptWord = trim($wordInfo['word'] ?? '');
+						$certainty = floatval($wordInfo['certainty'] ?? NULL);
+						if(!$certainty)
+						{
+							$certainty = 1;
+						}
+
+						$word = Word::find()->word($conceptWord)->one();
+						if(!$word)
+						{
+							//Create the word!
+							$conceptWord = str_replace(' (new)', '', $conceptWord);
+							$dreamAnalysis = new DreamAnalysisApi();
+							$wordRequest = new AddWordRequest();
+							$wordRequest->word = $conceptWord;
+							$wordResponse = $dreamAnalysis->addWord($wordRequest);
+							if($wordResponse->isSuccess())
+							{
+								$word = Word::find()->word($wordResponse->word)->one();
+							}
+							else
+							{
+								$this->addFlash(new Flash('Failed to add word ' . $conceptWord . ': ' . $wordResponse->error .  '.', Flash::WARNING));
+							}
+						}
+
 						if($word)
 						{
-							$model->link('words', $word);
+							$model->link('words', $word, [
+								'certainty' => $certainty
+							]);
 						}
 					}
-
-					$model->save();
 				}
-
-				return $this->redirect(['view', 'id' => $model->getId()]);
+				$this->addFlash(new Flash('Successfully saved concept.', Flash::SUCCESS));
 			}
 			else
 			{
-				print "<pre>";
-				print_r($model->getErrors());
-				die();
+				$this->addFlash(new Flash('Failed to save concept.', Flash::FAILURE));
 			}
 		}
 
