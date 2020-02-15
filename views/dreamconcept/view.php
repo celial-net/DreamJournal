@@ -18,17 +18,14 @@ use kartik\select2\Select2;
         ],
     ]) ?>
 
+	<?= \yii\helpers\Html::hiddenInput('_Concept[id]', $model->getId(), [
+		'id' => 'Concept_id'
+	]) ?>
+
 	<?php
 	echo '<label class="control-label">Words</label>';
-	echo Select2::widget([
-		'name' => 'Concept[words]',
-		'data' => $model->getFormData(),
-		'value' => array_column($model->words, 'word'),
-		'options' => [
-			'placeholder' => 'Select words...',
-			'multiple' => true,
-			'disabled' => true
-		],
+	echo $this->renderFile('@app/views/dreamconcept/word-list.php', [
+		'editable' => false
 	]);
 
 	echo '<label class="control-label">Dreams</label>';

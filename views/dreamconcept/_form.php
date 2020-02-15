@@ -15,37 +15,17 @@ use yii\web\JsExpression;
 	<h3><?=$this->title?></h3>
     <?php $form = ActiveForm::begin(); ?>
 
+	<?= \yii\helpers\Html::hiddenInput('_Concept[id]', $model->getId(), [
+		'id' => 'Concept_id'
+	]) ?>
+
     <?= $form->field($model, 'name')->textInput(['maxlength' => true]) ?>
 
 	<div class="form-group">
-		<?php
-		echo '<label class="control-label">Add Words</label>';
-		echo Select2::widget([
-			'name' => 'Concept[words]',
-			'maintainOrder' => true,
-			'data' => $model->getFormData(),
-			'value' => array_column($model->words, 'word'),
-			'pluginOptions' => [
-				'ajax' => [
-					'url' => '/dreamconcept/words',
-					'dataType' => 'json',
-					'data' => new JsExpression('function(params) { return {search:params.term}; }')
-				],
-				'allowClear' => true,
-				'minimumInputLength' => 2,
-				'language' => [
-					'errorLoading' => new JsExpression("function () { return 'Waiting for results...'; }"),
-				],
-				'escapeMarkup' => new JsExpression('function (markup) { return markup; }'),
-				'templateResult' => new JsExpression('function(word) { return word.text; }'),
-				'templateSelection' => new JsExpression('function (word) {  return word.text; }'),
-			],
-			'options' => [
-				'placeholder' => 'Select words...',
-				'multiple' => true
-			],
-		]);
-		?>
+		<label class="control-label">Words</label>
+		<?=$this->renderFile('@app/views/dreamconcept/word-list.php', [
+			'editable' => true
+		])?>
 	</div>
 
     <div class="form-group">
