@@ -215,86 +215,76 @@ class Dream extends \yii\db\ActiveRecord
 	/**
 	 * Finds related dreams based on the concepts in this dream.
 	 *
+	 * @param bool $sameUser
 	 * @return Dream[]
 	 */
-	public function findRelated(): array
+	public function findRelated(bool $sameUser = true): array
 	{
+		$params = [
+			':dreamId' => $this->id
+		];
+
+		$userCondition = '';
+		if($sameUser)
+		{
+			$params[':dreamUserId'] = $this->user_id;
+			$userCondition = 'AND related_dream.user_id = :dreamUserId';
+		}
+
 		$sql = "
 SELECT
-	z.related_id,
-	z.title,
-	SUM(z.weight) AS 'weight'
+    related_dream.*
 FROM
--- Dream Category Relatedness Weight
 (
+	SELECT
+		z.related_id AS 'related_id',
+		SUM(z.weight) AS 'weight'
+	FROM
+	-- Dream Category Relatedness Weight
 	(
-		SELECT
-			BIN_TO_UUID(related.id) as 'related_id',
-			related.title AS 'title',
-			COUNT(d2c_related.category_id) * 10 AS 'weight'
-		FROM
-			dj.dream related
-		INNER JOIN
-			dj.dream_to_dream_category d2c_related ON d2c_related.dream_id = related.id
-		INNER JOIN
-			dj.dream_to_dream_category d2c ON d2c.dream_id = :dreamId
-		WHERE
-			related.id != :dreamId
-			and d2c_related.category_id = d2c.category_id
-		GROUP BY
-			related.id
-	)
-	UNION
-    -- Dream Type Relatedness Weight
-	(
-		SELECT
-			BIN_TO_UUID(related.id) as 'related_id',
-			related.title AS 'title',
-			COUNT(d2t_related.type_id) * 10 AS 'weight'
-		FROM
-			dj.dream related
-		INNER JOIN
-			dj.dream_to_dream_type d2t_related ON d2t_related.dream_id = related.id
-		INNER JOIN
-			dj.dream_to_dream_type d2t ON d2t.dream_id = :dreamId
-		WHERE
-			related.id != :dreamId
-			and d2t_related.type_id = d2t.type_id
-		GROUP BY
-			related.id
-	)
-    UNION
-    (
-		SELECT
-			related_dream_weight.dream_id as 'related_id',
-			related_dream_weight.dream_title 'title',
-			(SUM(dwf.frequency * w2c.certainty) * total_words.total)
-			* related_dream_weight.weight * 10 as 'weight'
-		FROM
-			dj.dream dream
-		INNER JOIN
-			freud.dream_word_freq dwf ON dwf.dream_id = dream.id
-		INNER JOIN
-			freud.word_to_concept w2c ON w2c.word_id = dwf.word_id
-		INNER JOIN
-			freud.concept concept ON concept.id = w2c.concept_id
-		INNER JOIN
 		(
 			SELECT
-			    twf.dream_id AS 'dream_id',
-				COUNT(twf.word_id) AS 'total'
+				BIN_TO_UUID(related.id) as 'related_id',
+				related.title AS 'title',
+				COUNT(d2c_related.category_id) * 10 AS 'weight'
 			FROM
-				freud.dream_word_freq twf
+				dj.dream related
+			INNER JOIN
+				dj.dream_to_dream_category d2c_related ON d2c_related.dream_id = related.id
+			INNER JOIN
+				dj.dream_to_dream_category d2c ON d2c.dream_id = :dreamId
+			WHERE
+				related.id != :dreamId
+				and d2c_related.category_id = d2c.category_id
 			GROUP BY
-				twf.dream_id
-		) total_words ON total_words.dream_id = dream.id
-		INNER JOIN
+				related.id
+		)
+		UNION
+		-- Dream Type Relatedness Weight
 		(
 			SELECT
-				dream.id AS 'dream_id',
-				dream.title AS 'dream_title',
-				w2c.concept_id AS 'concept_id',
-				(SUM(dwf.frequency * w2c.certainty) * total_words.total) AS 'weight'
+				BIN_TO_UUID(related.id) as 'related_id',
+				related.title AS 'title',
+				COUNT(d2t_related.type_id) * 10 AS 'weight'
+			FROM
+				dj.dream related
+			INNER JOIN
+				dj.dream_to_dream_type d2t_related ON d2t_related.dream_id = related.id
+			INNER JOIN
+				dj.dream_to_dream_type d2t ON d2t.dream_id = :dreamId
+			WHERE
+				related.id != :dreamId
+				and d2t_related.type_id = d2t.type_id
+			GROUP BY
+				related.id
+		)
+		UNION
+		(
+			SELECT
+				related_dream_weight.dream_id as 'related_id',
+				related_dream_weight.dream_title 'title',
+				(SUM(dwf.frequency * w2c.certainty) * total_words.total)
+				* related_dream_weight.weight * 10 as 'weight'
 			FROM
 				dj.dream dream
 			INNER JOIN
@@ -306,37 +296,66 @@ FROM
 			INNER JOIN
 			(
 				SELECT
-					twf.dream_id as 'dream_id',
+					twf.dream_id AS 'dream_id',
 					COUNT(twf.word_id) AS 'total'
 				FROM
 					freud.dream_word_freq twf
 				GROUP BY
 					twf.dream_id
 			) total_words ON total_words.dream_id = dream.id
+			INNER JOIN
+			(
+				SELECT
+					dream.id AS 'dream_id',
+					dream.title AS 'dream_title',
+					w2c.concept_id AS 'concept_id',
+					(SUM(dwf.frequency * w2c.certainty) * total_words.total) AS 'weight'
+				FROM
+					dj.dream dream
+				INNER JOIN
+					freud.dream_word_freq dwf ON dwf.dream_id = dream.id
+				INNER JOIN
+					freud.word_to_concept w2c ON w2c.word_id = dwf.word_id
+				INNER JOIN
+					freud.concept concept ON concept.id = w2c.concept_id
+				INNER JOIN
+				(
+					SELECT
+						twf.dream_id as 'dream_id',
+						COUNT(twf.word_id) AS 'total'
+					FROM
+						freud.dream_word_freq twf
+					GROUP BY
+						twf.dream_id
+				) total_words ON total_words.dream_id = dream.id
+				GROUP BY
+					dream.id,
+					w2c.concept_id
+			) related_dream_weight ON (
+				related_dream_weight.concept_id = w2c.concept_id
+				AND related_dream_weight.dream_id != dream.id
+			)
+			WHERE
+				dream.id = :dreamId
 			GROUP BY
-				dream.id,
-				w2c.concept_id
-		) related_dream_weight ON (
-			related_dream_weight.concept_id = w2c.concept_id
-			AND related_dream_weight.dream_id != dream.id
+				related_dream_weight.dream_id
 		)
-		WHERE
-			dream.id = :dreamId
-		GROUP BY
-			related_dream_weight.dream_id
-    )
-) z
+	) z
+    GROUP BY
+		z.related_id
+	ORDER BY
+		z.related_id
+) z2
 INNER JOIN
-	dj.dream related_dream ON related_dream.id = z.related_id
-GROUP BY
-	z.related_id
+	dj.dream related_dream ON related_dream.id = z2.related_id
+WHERE
+    weight > 0 -- must have a match (should always be the case)
+	{$userCondition} -- horribly inefficient but simple, should be moved to each sub query
 ORDER BY
-	z.weight DESC
+	weight DESC
 ;";
 
-		return self::findBySql($sql, [
-			':dreamId' => $this->id
-		])->all();
+		return self::findBySql($sql, $params)->all();
 
 		/*$concepts = $this->getConcepts();
 		return self::findByConcepts($concepts)->all();*/
