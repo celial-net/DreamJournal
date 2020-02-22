@@ -343,8 +343,6 @@ FROM
 	) z
     GROUP BY
 		z.related_id
-	ORDER BY
-		z.related_id
 ) z2
 INNER JOIN
 	dj.dream related_dream ON related_dream.id = z2.related_id

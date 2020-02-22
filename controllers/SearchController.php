@@ -86,24 +86,26 @@ class SearchController extends BaseController
 		//Get all of the searched for results and filter by their IDs in the related dreams
 		$limit = $dreamForm->limit;
 		$page = $dreamForm->page;
-		$dreamForm->limit = 0;
 
-		$relatedDreams = $dream->findRelated(true);
-		$relatedDreamIds = [];
-
-		foreach($relatedDreams as $relatedDream)
-		{
-			$relatedDreamIds[] = $relatedDream->getId();
-		}
+		$dreamForm->limit = NULL;
+		$dreamForm->page = NULL;
 
 		$searchedDreams = $dreamForm->getDreams();
-		//Find all of the related dreams
-		$filteredDreams = [];
+		$relatedDreams = $dream->findRelated(true);
+
+		$searchedDreamIds = [];
 		foreach($searchedDreams as $searchedDream)
 		{
-			if(in_array($searchedDream->getId(), $relatedDreamIds))
+			$searchedDreamIds[] = $searchedDream->getId();
+		}
+
+		//Find all of the related dreams
+		$filteredDreams = [];
+		foreach($relatedDreams as $relatedDream)
+		{
+			if(in_array($relatedDream->getId(), $searchedDreamIds))
 			{
-				$filteredDreams[] = $searchedDream;
+				$filteredDreams[] = $relatedDream;
 			}
 		}
 
@@ -118,7 +120,7 @@ class SearchController extends BaseController
 		if($limit > 0 && $limit < count($filteredDreams))
 		{
 			$page = intval($page);
-			$filteredDreams = array_slice($filteredDreams, ($page - 1) * $limit, $limit);
+			$filteredDreams = array_slice($filteredDreams, $page * $limit, $limit);
 		}
 
 		foreach($filteredDreams as $dream)
