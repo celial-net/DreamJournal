@@ -2,7 +2,7 @@
 /** @var array $dreamCountData */
 ?>
 
-<canvas id="myChart" width="400" height="400"></canvas>
+<canvas id="myChart" width="800" height="600"></canvas>
 <script>
 	$(document).ready(function(){
 		var ctx = document.getElementById('myChart').getContext('2d');

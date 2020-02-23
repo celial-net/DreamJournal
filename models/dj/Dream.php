@@ -244,7 +244,7 @@ FROM
 	(
 		(
 			SELECT
-				BIN_TO_UUID(related.id) as 'related_id',
+				related.id as 'related_id',
 				related.title AS 'title',
 				COUNT(d2c_related.category_id) * 10 AS 'weight'
 			FROM
@@ -263,7 +263,7 @@ FROM
 		-- Dream Type Relatedness Weight
 		(
 			SELECT
-				BIN_TO_UUID(related.id) as 'related_id',
+				related.id as 'related_id',
 				related.title AS 'title',
 				COUNT(d2t_related.type_id) * 10 AS 'weight'
 			FROM
@@ -352,6 +352,11 @@ WHERE
 ORDER BY
 	weight DESC
 ;";
+
+		/*$paramSql = str_replace(':dreamUserId', $this->user_id, $sql);
+		$paramSql = str_replace(':dreamId', "UUID_TO_BIN('" . $this->getId() . "')", $paramSql);
+		print_r($paramSql);
+		print "\n";*/
 
 		return self::findBySql($sql, $params)->all();
 
