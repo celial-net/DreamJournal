@@ -36,6 +36,14 @@ $config = [
             // 'useFileTransport' to false and configure a transport
             // for the mailer to send real emails.
             'useFileTransport' => false,
+			'transport' => [
+				'class' => 'Swift_SmtpTransport',
+				'host' => 'localhost',  // e.g. smtp.mandrillapp.com or smtp.gmail.com
+				//'username' => 'username',
+				//'password' => 'password',
+				'port' => '25', // Port 25 is a very common port too
+				'encryption' => 'tls', // It is often used, check your provider or mail server specs
+			],
         ],
         'log' => [
             'traceLevel' => YII_DEBUG ? 3 : 0,
