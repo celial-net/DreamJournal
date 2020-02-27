@@ -120,7 +120,7 @@
 			</li>
 
 			<li class="nav-item">
-				<a class="nav-link" href="#">Contact</a>
+				<a class="nav-link" href="/user/contact">Contact</a>
 			</li>
 			<li class="nav-item">
 				<div class="form">

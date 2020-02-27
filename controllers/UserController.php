@@ -29,7 +29,7 @@ class UserController extends BaseController
                 'rules' => [
                 	[
                 		'allow' => true,
-						'actions' => ['contact', 'login', 'login', 'register', 'resetrequest', 'reset', 'error'],
+						'actions' => ['contact', 'login', 'login', 'register', 'resetrequest', 'reset', 'error', 'captcha'],
 						'roles' => ['?', '@']
 					],
                     [
@@ -53,7 +53,7 @@ class UserController extends BaseController
             ],
             'captcha' => [
                 'class' => 'yii\captcha\CaptchaAction',
-                'fixedVerifyCode' => YII_ENV_TEST ? 'testme' : null,
+                'fixedVerifyCode' => 'test123',
             ],
         ];
     }
@@ -264,8 +264,8 @@ class UserController extends BaseController
     public function actionContact()
     {
         $model = new ContactForm();
-        if ($model->load(Yii::$app->request->post()) && $model->contact(Yii::$app->params['adminEmail'])) {
-            Yii::$app->session->setFlash('contactFormSubmitted');
+        if ($model->load(Yii::$app->request->post()) && $model->contact()) {
+            $this->addFlash(new Flash('Thank you for contacting us. We will get back to you as soon as possible.', Flash::SUCCESS));
 
             return $this->refresh();
         }

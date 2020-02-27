@@ -28,7 +28,7 @@ class ContactForm extends Model
             // email has to be a valid email address
             ['email', 'email'],
             // verifyCode needs to be entered correctly
-            ['verifyCode', 'captcha'],
+            ['verifyCode', 'captcha', 'captchaAction' => 'user/captcha'],
         ];
     }
 
@@ -44,18 +44,24 @@ class ContactForm extends Model
 
     /**
      * Sends an email to the specified email address using the information collected by this model.
-     * @param string $email the target email address
      * @return bool whether the model passes validation
      */
-    public function contact($email)
+    public function contact()
     {
         if ($this->validate()) {
+        	$body = $this->body;
+
+        	if($user = Yii::$app->getUser()->getIdentity())
+			{
+				$body .= "\r\n\r\nUser ID: " . $user->getId();
+			}
+
             Yii::$app->mailer->compose()
-                ->setTo($email)
-                ->setFrom([Yii::$app->params['senderEmail'] => Yii::$app->params['senderName']])
+                ->setTo(Yii::$app->params['webmasterEmail'])
+                ->setFrom([$this->email => $this->name])
                 ->setReplyTo([$this->email => $this->name])
                 ->setSubject($this->subject)
-                ->setTextBody($this->body)
+                ->setTextBody($body)
                 ->send();
 
             return true;
