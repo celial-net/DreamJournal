@@ -42,7 +42,7 @@ $config = [
 				//'username' => 'username',
 				//'password' => 'password',
 				'port' => '25', // Port 25 is a very common port too
-				'encryption' => 'tls', // It is often used, check your provider or mail server specs
+				//'encryption' => 'tls', // It is often used, check your provider or mail server specs
 			],
         ],
         'log' => [
