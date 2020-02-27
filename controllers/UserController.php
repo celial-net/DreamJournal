@@ -158,6 +158,7 @@ class UserController extends BaseController
 
 		if ($model->load(Yii::$app->request->post()) && $model->resetPassword())
 		{
+			$this->addFlash(new Flash('Password successfully reset. You can now login with your new password.', Flash::SUCCESS));
 			return $this->redirect('/user/login');
 		}
 
@@ -181,6 +182,7 @@ class UserController extends BaseController
 
 		$model = new RegistrationForm();
 		if ($model->load(Yii::$app->request->post()) && $model->register()) {
+			$this->addFlash(new Flash("You've successfully registered! You can now login.", Flash::SUCCESS));
 			return $this->goBack();
 		}
 

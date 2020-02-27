@@ -3,6 +3,7 @@
 namespace app\models;
 
 use app\models\dj\User;
+use app\utilities\Settings;
 use yii\base\Model;
 
 class PasswordResetRequestForm extends Model
@@ -50,6 +51,7 @@ class PasswordResetRequestForm extends Model
 			$user->save();
 
 			//Email to user
+			$server = Settings::get('app', 'server');
 			$user->sendEmail("Password Reset Request",
 "
 Dear {$user->name},
@@ -57,7 +59,7 @@ Dear {$user->name},
 We have received your request to reset your password.
 
 You can use the following link to reset your password:
-http://my.celial.net/user/reset?code={$code}
+http://{$server}/user/reset?code={$code}
 
 If you did not initiate this request, you can disregard this email.
 
