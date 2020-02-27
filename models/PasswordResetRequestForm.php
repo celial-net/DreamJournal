@@ -39,8 +39,32 @@ class PasswordResetRequestForm extends Model
 		$user = $this->getUser();
 		if($user)
 		{
-			$user->password_reset_code = "1994";
+			$code = '';
+			$digits = range(0, 9);
+			for($i=0; $i<8; $i++)
+			{
+				$code .= array_rand($digits);
+			}
+
+			$user->password_reset_code = $code;
 			$user->save();
+
+			//Email to user
+			$user->sendEmail("Password Reset Request",
+"
+Dear {$user->name},
+
+We have received your request to reset your password.
+
+You can use the following link to reset your password:
+http://my.celial.net/user/reset?code={$code}
+
+If you did not initiate this request, you can disregard this email.
+
+Sincerely,
+The Celial Team
+"
+			);
 		}
 		return true;
 	}

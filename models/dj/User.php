@@ -195,4 +195,21 @@ class User extends \yii\db\ActiveRecord implements IdentityInterface
 	{
 		return $this->hasOne(AccountSettings::class, ['user_id' => 'id']);
 	}
+
+	/**
+	 * Sends an email to the user.
+	 *
+	 * @param string $subject
+	 * @param string $body
+	 * @return bool
+	 */
+	public function sendEmail(string $subject, string $body): bool
+	{
+		return Yii::$app->mailer->compose()
+			->setTo($this->email)
+			->setFrom([Yii::$app->params['webmasterEmail'] => 'Webmaster'])
+			->setSubject($subject)
+			->setTextBody($body)
+			->send();
+	}
 }

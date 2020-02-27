@@ -4,8 +4,8 @@ require_once __DIR__ . '/../utilities/Settings.php';
 
 return [
     'class' => 'yii\db\Connection',
-    'dsn' => 'mysql:host=localhost;dbname=dj',
-    'username' => 'root',
+    'dsn' => \app\utilities\Settings::get('db', 'dsn'),
+    'username' => \app\utilities\Settings::get('db', 'user'),
     'password' => \app\utilities\Settings::get('db', 'password'),
     'charset' => 'utf8',
 

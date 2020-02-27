@@ -79,8 +79,26 @@ class RegistrationForm extends Model
 			$user->password = $user->generatePassword($this->password);
 			if ($user->save())
 			{
+				//Assign basic permission for access to dreams
 				$dreamerRole = Yii::$app->getAuthManager()->getRole('dreamer');
 				Yii::$app->getAuthManager()->assign($dreamerRole, $user->getId());
+
+				//Send welcome email
+				$user->sendEmail("Welcome to Celial!",
+"
+Dear {$user->name},
+
+Thank you for registering on Celial!
+
+We hope you have a great experience recording and analyzing your dreams.
+
+Please let us know if you have any issues with the site or if you have any suggestions.
+
+Sincerely,
+The Celial Team
+"
+				);
+
 				return true;
 			}
         }

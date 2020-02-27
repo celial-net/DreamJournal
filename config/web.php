@@ -1,5 +1,7 @@
 <?php
 
+require_once __DIR__ . '/../utilities/Settings.php';
+
 $params = require __DIR__ . '/params.php';
 $db = require __DIR__ . '/db.php';
 
@@ -35,14 +37,11 @@ $config = [
             // send all mails to a file by default. You have to set
             // 'useFileTransport' to false and configure a transport
             // for the mailer to send real emails.
-            'useFileTransport' => false,
-			'transport' => [
+            'useFileTransport' => YII_ENV_DEV,
+			'transport' => YII_ENV_DEV ? [] : [
 				'class' => 'Swift_SmtpTransport',
-				'host' => 'localhost',  // e.g. smtp.mandrillapp.com or smtp.gmail.com
-				//'username' => 'username',
-				//'password' => 'password',
-				'port' => '25', // Port 25 is a very common port too
-				//'encryption' => 'tls', // It is often used, check your provider or mail server specs
+				'host' => \app\utilities\Settings::get('smtp', 'host'),
+				'port' => \app\utilities\Settings::get('smtp', 'port'),
 			],
         ],
         'log' => [

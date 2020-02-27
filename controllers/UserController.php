@@ -122,7 +122,7 @@ class UserController extends BaseController
 		$model = new PasswordResetRequestForm();
 		if ($model->load(Yii::$app->request->post()) && $model->sendResetLink())
 		{
-
+			$this->addFlash(new Flash('An email with a password reset link has been sent. Please check your spam folder in case it is filtered.', Flash::SUCCESS));
 			return $this->goBack();
 		}
 
