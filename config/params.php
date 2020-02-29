@@ -1,5 +1,5 @@
 <?php
 
 return [
-    'webmasterEmail' => 'webmaster@my.celial.net'
+    'webmasterEmail' => 'jundar@celial.net'
 ];
