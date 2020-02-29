@@ -42,6 +42,9 @@ $config = [
 				'class' => 'Swift_SmtpTransport',
 				'host' => \app\utilities\Settings::get('smtp', 'host'),
 				'port' => \app\utilities\Settings::get('smtp', 'port'),
+				'username' => \app\utilities\Settings::get('smtp', 'username'),
+				'password' => \app\utilities\Settings::get('smtp', 'password'),
+				'encryption' => \app\utilities\Settings::get('smtp', 'encryption')
 			],
         ],
         'log' => [
