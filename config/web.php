@@ -38,14 +38,23 @@ $config = [
             // 'useFileTransport' to false and configure a transport
             // for the mailer to send real emails.
             'useFileTransport' => YII_ENV_DEV,
-			'transport' => YII_ENV_DEV ? [] : [
+			'transport' => [
 				'class' => 'Swift_SmtpTransport',
-				'host' => \app\utilities\Settings::get('smtp', 'host'),
-				'port' => \app\utilities\Settings::get('smtp', 'port'),
-				'username' => \app\utilities\Settings::get('smtp', 'username'),
-				'password' => \app\utilities\Settings::get('smtp', 'password'),
-				'encryption' => \app\utilities\Settings::get('smtp', 'encryption')
+				'host' => 'smtp.gmail.com',
+				'port' => 465,
+				'username' => 'jundar@celial.net',
+				'password' => 'pkizlodxokmkwikd',
+				'encryption' => 'ssl'
 			],
+			/*
+			 *         "smtp": {
+                "host": "smtp.gmail.com",
+                "port": "587",
+                "username": "jundar@celial.net",
+                "password": "gtgfaeivvoxdlsap",
+                "encryption": "tls"
+        }
+			 */
         ],
         'log' => [
             'traceLevel' => YII_DEBUG ? 3 : 0,
