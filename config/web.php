@@ -37,14 +37,14 @@ $config = [
             // send all mails to a file by default. You have to set
             // 'useFileTransport' to false and configure a transport
             // for the mailer to send real emails.
-            'useFileTransport' => YII_ENV_DEV,
+            'useFileTransport' => false,
 			'transport' => [
 				'class' => 'Swift_SmtpTransport',
-				'host' => 'smtp.gmail.com',
-				'port' => 465,
-				'username' => 'jundar@celial.net',
-				'password' => 'pkizlodxokmkwikd',
-				'encryption' => 'ssl'
+				'host' => \app\utilities\Settings::get('smtp', 'host'),
+				'port' => \app\utilities\Settings::get('smtp', 'port'),
+				'username' => \app\utilities\Settings::get('smtp', 'username'),
+				'password' => \app\utilities\Settings::get('smtp', 'password'),
+				'encryption' => \app\utilities\Settings::get('smtp', 'encryption')
 			],
 			/*
 			 *         "smtp": {
