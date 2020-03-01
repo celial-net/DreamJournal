@@ -45,16 +45,7 @@ $config = [
 				'username' => \app\utilities\Settings::get('smtp', 'username'),
 				'password' => \app\utilities\Settings::get('smtp', 'password'),
 				'encryption' => \app\utilities\Settings::get('smtp', 'encryption')
-			],
-			/*
-			 *         "smtp": {
-                "host": "smtp.gmail.com",
-                "port": "587",
-                "username": "jundar@celial.net",
-                "password": "gtgfaeivvoxdlsap",
-                "encryption": "tls"
-        }
-			 */
+			]
         ],
         'log' => [
             'traceLevel' => YII_DEBUG ? 3 : 0,
