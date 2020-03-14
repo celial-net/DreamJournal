@@ -1,24 +1,24 @@
 <?php
 
-namespace app\models\freud;
+namespace app\models\dj;
 
 use Yii;
 
 /**
- * This is the model class for table "freud.word_to_concept".
+ * This is the model class for table "dj.word_to_category".
  *
  * @property int $word_id
- * @property int $concept_id
+ * @property int $category_id
  * @property float|null $certainty
  */
-class WordToConcept extends \yii\db\ActiveRecord
+class WordToCategory extends \yii\db\ActiveRecord
 {
     /**
      * {@inheritdoc}
      */
     public static function tableName()
     {
-        return 'freud.word_to_concept';
+        return 'dj.word_to_category';
     }
 
     /**
@@ -27,8 +27,8 @@ class WordToConcept extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['word_id', 'concept_id'], 'required'],
-            [['word_id', 'concept_id'], 'integer'],
+            [['word_id', 'category_id'], 'required'],
+            [['word_id', 'category_id'], 'integer'],
             [['certainty'], 'number'],
         ];
     }
@@ -40,17 +40,17 @@ class WordToConcept extends \yii\db\ActiveRecord
     {
         return [
             'word_id' => 'Word ID',
-            'concept_id' => 'Concept ID',
+            'category_id' => 'Category ID',
             'certainty' => 'Certainty',
         ];
     }
 
     /**
      * {@inheritdoc}
-     * @return WordToConceptQuery the active query used by this AR class.
+     * @return WordToCategoryQuery the active query used by this AR class.
      */
     public static function find()
     {
-        return new WordToConceptQuery(get_called_class());
+        return new WordToCategoryQuery(get_called_class());
     }
 }
