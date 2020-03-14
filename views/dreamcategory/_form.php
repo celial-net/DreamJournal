@@ -14,7 +14,18 @@ use yii\widgets\ActiveForm;
 	<div class="dream-category-form">
 		<?php $form = ActiveForm::begin(); ?>
 
+		<?= \yii\helpers\Html::hiddenInput('_Concept[id]', $model->getId(), [
+			'id' => 'Concept_id'
+		]) ?>
+
 		<?= $form->field($model, 'name')->textInput(['maxlength' => true]) ?>
+
+		<div class="form-group">
+			<label class="control-label">Words</label>
+			<?=$this->renderFile('@app/views/dreamconcept/word-list.php', [
+				'editable' => true
+			])?>
+		</div>
 
 		<div class="form-group">
 			<?= Html::submitButton('Save', ['class' => 'btn btn-success']) ?>
