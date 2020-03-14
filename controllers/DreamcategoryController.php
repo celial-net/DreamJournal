@@ -2,9 +2,14 @@
 
 namespace app\controllers;
 
+use app\api\DreamAnalysis\AddWordRequest;
+use app\api\DreamAnalysis\DreamAnalysisApi;
 use app\components\gui\ActionItem;
 use app\components\gui\Breadcrumb;
+use app\components\gui\flash\Flash;
 use app\components\gui\js\Script;
+use app\models\dj\WordToCategory;
+use app\models\freud\Word;
 use Yii;
 use app\models\dj\DreamCategory;
 use app\models\dj\DreamCategorySearch;
@@ -28,7 +33,7 @@ class DreamcategoryController extends BaseController
     public function beforeAction($action)
 	{
 		$this->addBreadcrumb(new Breadcrumb('Dream Categories', '/dreamcategory'));
-		$this->addActionItem(new ActionItem('New', '/dreamcategory/create', 'primary'));
+		$this->addActionItem(new ActionItem('New', '/dreamcategory/new', 'primary'));
 
 		//Register Vue for dream comments
 		$this->getScriptRegistrar()->registerScript(
@@ -73,7 +78,7 @@ class DreamcategoryController extends BaseController
      */
     public function actionView($id)
     {
-		$this->getScriptRegistrar()->registerScript(new Script('dream/concept.js'));
+		$this->getScriptRegistrar()->registerScript(new Script('dream/category.js'));
 
 		$this->addBreadcrumb(new Breadcrumb('View', '', true));
 
@@ -92,9 +97,9 @@ class DreamcategoryController extends BaseController
      * If creation is successful, the browser will be redirected to the 'view' page.
      * @return mixed
      */
-    public function actionCreate()
+    public function actionNew()
     {
-		$this->getScriptRegistrar()->registerScript(new Script('dream/concept.js'));
+		$this->getScriptRegistrar()->registerScript(new Script('dream/category.js'));
 
 		$this->addBreadcrumb(new Breadcrumb('New', '', true));
 
@@ -102,9 +107,62 @@ class DreamcategoryController extends BaseController
 
         $model = new DreamCategory();
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->id]);
-        }
+        if($this->getRequest()->getIsPost())
+		{
+			$post = $this->getRequest()->post();
+			$model->load($post);
+
+			if($model->save())
+			{
+				$categoryWords = $post['Category']['word'] ?? [];
+				//Add words to category
+				if($categoryWords)
+				{
+					foreach($categoryWords as $wordInfo)
+					{
+						$categoryWord = trim($wordInfo['word'] ?? '');
+						$certainty = floatval($wordInfo['certainty'] ?? NULL);
+						if(!$certainty)
+						{
+							$certainty = 1;
+						}
+
+						$word = Word::find()->word($categoryWord)->one();
+						if(!$word)
+						{
+							//Create the word!
+							$categoryWord = str_replace(' (new)', '', $categoryWord);
+							$dreamAnalysis = new DreamAnalysisApi();
+							$wordRequest = new AddWordRequest();
+							$wordRequest->word = $categoryWord;
+							$wordResponse = $dreamAnalysis->addWord($wordRequest);
+							if($wordResponse->isSuccess())
+							{
+								$word = Word::find()->word($wordResponse->word)->one();
+							}
+							else
+							{
+								$this->addFlash(new Flash('Failed to add word ' . $categoryWord . ': ' . $wordResponse->error .  '.', Flash::WARNING));
+							}
+						}
+
+						if($word)
+						{
+							$model->link('words', $word, [
+								'certainty' => $certainty
+							]);
+						}
+					}
+				}
+				$this->addFlash(new Flash('Successfully saved category.', Flash::SUCCESS));
+			}
+			else
+			{
+				$this->addFlash(new Flash('Failed to save category.', Flash::FAILURE));
+			}
+
+			return $this->redirect(['view', 'id' => $model->id]);
+		}
 
         return $this->render('_form', [
             'model' => $model,
@@ -120,7 +178,7 @@ class DreamcategoryController extends BaseController
      */
     public function actionEdit($id)
     {
-		$this->getScriptRegistrar()->registerScript(new Script('dream/concept.js'));
+		$this->getScriptRegistrar()->registerScript(new Script('dream/category.js'));
 
 		$this->addBreadcrumb(new Breadcrumb('Edit', '', true));
 		$this->addActionItem(new ActionItem('Cancel', '/dreamcategory/view/' . $id, 'secondary'));
@@ -129,9 +187,62 @@ class DreamcategoryController extends BaseController
 
         $model = $this->findModel($id);
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->id]);
-        }
+        if($this->getRequest()->getIsPost())
+		{
+			$post = $this->getRequest()->post();
+			$model->load($post);
+
+			if($model->save())
+			{
+				$model->unlinkAll('words', true);
+
+				$categoryWords = $post['Category']['word'] ?? [];
+				//Add words to category
+				if($categoryWords)
+				{
+					foreach($categoryWords as $wordInfo)
+					{
+						$categoryWord = trim($wordInfo['word'] ?? '');
+						$certainty = floatval($wordInfo['certainty'] ?? NULL);
+						if(!$certainty)
+						{
+							$certainty = 1;
+						}
+
+						$word = Word::find()->word($categoryWord)->one();
+						if(!$word)
+						{
+							//Create the word!
+							$categoryWord = str_replace(' (new)', '', $categoryWord);
+							$dreamAnalysis = new DreamAnalysisApi();
+							$wordRequest = new AddWordRequest();
+							$wordRequest->word = $categoryWord;
+							$wordResponse = $dreamAnalysis->addWord($wordRequest);
+							if($wordResponse->isSuccess())
+							{
+								$word = Word::find()->word($wordResponse->word)->one();
+							}
+							else
+							{
+								$this->addFlash(new Flash('Failed to add word ' . $categoryWord . ': ' . $wordResponse->error .  '.', Flash::WARNING));
+							}
+						}
+
+						if($word)
+						{
+							$model->link('words', $word, [
+								'certainty' => $certainty
+							]);
+						}
+					}
+				}
+				$this->addFlash(new Flash('Successfully saved category.', Flash::SUCCESS));
+			}
+			else
+			{
+				$this->addFlash(new Flash('Failed to save category.', Flash::FAILURE));
+			}
+		}
 
         return $this->render('_form', [
             'model' => $model,
@@ -151,6 +262,66 @@ class DreamcategoryController extends BaseController
 
         return $this->redirect(['index']);
     }
+
+	# AJAX Routes
+
+	/**
+	 * Gets all of the words for a concept.
+	 *
+	 * @param int $id
+	 */
+	public function actionCategorywords(int $id)
+	{
+		$category = $this->findModel($id);
+		$words = $category->words;
+
+		$wordData = [];
+		foreach($words as $word)
+		{
+			$wordWithCertainty = [];
+			$wordWithCertainty['id'] = $word->id;
+			$wordWithCertainty['word'] = $word->word;
+
+			$wordToCategory = WordToCategory::find()->andWhere(['word_id' => $word->id])->andWhere(['category_id' => $id])->one();
+			if($wordToCategory)
+			{
+				$wordToCategory['certainty'] = $wordToCategory->certainty;
+			}
+			$wordData[] = $wordWithCertainty;
+		}
+
+		return $this->asJson($wordData);
+	}
+
+	/**
+	 * Gets all of the words as AJAX based on the search string.
+	 *
+	 * @param string $search
+	 */
+	public function actionWords(string $search)
+	{
+		//Search for matches
+		$words = Word::find()->wordLike($search)->all();
+
+		//Add unknown word to results so that it can be selected and created
+		if(!Word::find()->word($search)->exists())
+		{
+			$word = new Word();
+			$word->word = $search . ' (new)';
+			$word->id = $word->word;
+			array_unshift($words, $word);
+		}
+
+		$wordData = [];
+		foreach($words as $word)
+		{
+			$wordData[] = [
+				'id' => $word->word,
+				'text' => $word->word
+			];
+		}
+		return $this->asJson(['results' => $wordData]);
+	}
 
     /**
      * Finds the DreamCategory model based on its primary key value.

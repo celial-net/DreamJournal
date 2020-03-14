@@ -62,7 +62,7 @@ $config = [
             'showScriptName' => false,
             'rules' => [
 				//Special URLs
-				'dreamconcept/<id:[0-9]+>/words' => 'dreamconcept/conceptwords',
+				'dreamcategory/<id:[0-9]+>/words' => 'dreamcategory/categorywords',
 
             	//Allow for UUIDs in otherwise normal URLs
             	'<controller:[a-zA-Z0-9]+>/<action:[a-zA-Z0-9]+>/<id:[a-f0-9\-]+>' => '<controller>/<action>',

@@ -22,7 +22,7 @@ use yii\widgets\ActiveForm;
 
 		<div class="form-group">
 			<label class="control-label">Words</label>
-			<?=$this->renderFile('@app/views/dreamconcept/word-list.php', [
+			<?=$this->renderFile('@app/views/dreamcategory/word-list.php', [
 				'editable' => true
 			])?>
 		</div>

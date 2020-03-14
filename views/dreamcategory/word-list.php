@@ -3,7 +3,7 @@
 use kartik\select2\Select2;
 use yii\web\JsExpression;
 ?>
-<div id="concept-word-list-app" class="col-lg-12">
+<div id="category-word-list-app" class="col-lg-12">
 	<!-- Word Modal -->
 	<?php
 	if($editable)
@@ -18,17 +18,17 @@ use yii\web\JsExpression;
 					<div class="modal-body">
 						<div class="form">
 							<div class="form-group">
-								<label for="concept-word">Word</label>
+								<label for="category-word">Word</label>
 								<?php
 								echo Select2::widget([
-									'id' => 'concept_words',
-									'name' => '_Concept[words]',
+									'id' => 'category_words',
+									'name' => '_Category[words]',
 									'maintainOrder' => true,
 									'data' => '',
 									'value' => '',
 									'pluginOptions' => [
 										'ajax' => [
-											'url' => '/dreamconcept/words',
+											'url' => '/dreamcategory/words',
 											'dataType' => 'json',
 											'data' => new JsExpression('function(params) { return {search:params.term}; }')
 										],
@@ -49,8 +49,8 @@ use yii\web\JsExpression;
 								?>
 							</div>
 							<div class="form-group">
-								<label for="Concept_certainty">Weight</label>
-								<input v-model="certainty" type="number" min="0" max="1" step="0.01" id="Concept_certainty" class="form-control" />
+								<label for="Category_certainty">Weight</label>
+								<input v-model="certainty" type="number" min="0" max="1" step="0.01" id="Category_certainty" class="form-control" />
 							</div>
 						</div>
 					</div>
@@ -66,7 +66,7 @@ use yii\web\JsExpression;
 	}
 	?>
 
-	<div class="concept concept-words">
+	<div class="category category-words">
 		<table class="table table-striped table-bordered detail-view">
 			<tbody>
 				<tr>
@@ -83,8 +83,8 @@ use yii\web\JsExpression;
 						?>
 						<td>
 							<div class="col-lg-12">
-								<input type="hidden" :name="'Concept[word][' + word.id + '][word]'" :value="word.word" :id="'ConceptWord_' + word.id" />
-								<input type="hidden" :name="'Concept[word][' + word.id + '][certainty]'" :value="word.certainty" :id="'ConceptWord_' + word.id + '_certainty'" />
+								<input type="hidden" :name="'Category[word][' + word.id + '][word]'" :value="word.word" :id="'CategoryWord_' + word.id" />
+								<input type="hidden" :name="'Category[word][' + word.id + '][certainty]'" :value="word.certainty" :id="'CategoryWord_' + word.id + '_certainty'" />
 								<button type="button" class="btn btn-sm btn-danger" v-on:click="deleteWord(word.id)">Delete</button>
 							</div>
 						</td>

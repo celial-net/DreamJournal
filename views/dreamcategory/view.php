@@ -19,13 +19,13 @@ use yii\widgets\DetailView;
 		]) ?>
 	</div>
 
-	<?= \yii\helpers\Html::hiddenInput('_Concept[id]', $model->getId(), [
-		'id' => 'Concept_id'
+	<?= \yii\helpers\Html::hiddenInput('_Category[id]', $model->getId(), [
+		'id' => 'Category_id'
 	]) ?>
 
 	<?php
 	echo '<label class="control-label">Words</label>';
-	echo $this->renderFile('@app/views/dreamconcept/word-list.php', [
+	echo $this->renderFile('@app/views/dreamcategory/word-list.php', [
 		'editable' => false
 	]);
 	?>

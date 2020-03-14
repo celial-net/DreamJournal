@@ -2,6 +2,8 @@
 
 namespace app\models\dj;
 
+use app\models\freud\Word;
+use app\models\freud\WordQuery;
 use Yii;
 
 /**
@@ -9,6 +11,7 @@ use Yii;
  *
  * @property int $id
  * @property string|null $name
+ * @property Word[] $words
  */
 class DreamCategory extends \yii\db\ActiveRecord
 {
@@ -66,4 +69,14 @@ class DreamCategory extends \yii\db\ActiveRecord
     {
         return new DreamCategoryQuery(get_called_class());
     }
+
+	/**
+	 * Dream word relation.
+	 *
+	 * @return WordQuery
+	 */
+	public function getWords(): WordQuery
+	{
+		return $this->hasMany(Word::class, ['id' => 'word_id'])->viaTable('dj.word_to_category', ['category_id' => 'id']);
+	}
 }
