@@ -127,7 +127,7 @@ class DreamGraphData
 			INNER JOIN
 				freud.dream_word_freq dwf ON dwf.dream_id = dream.id
 			INNER JOIN
-				freud.word_to_category w2c ON w2c.word_id = dwf.word_id
+				dj.word_to_category w2c ON w2c.word_id = dwf.word_id
 			INNER JOIN
 				dj.dream_category category ON category.id = w2c.category_id
 			WHERE
