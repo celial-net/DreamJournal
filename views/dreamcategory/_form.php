@@ -14,8 +14,8 @@ use yii\widgets\ActiveForm;
 	<div class="dream-category-form">
 		<?php $form = ActiveForm::begin(); ?>
 
-		<?= \yii\helpers\Html::hiddenInput('_Concept[id]', $model->getId(), [
-			'id' => 'Concept_id'
+		<?= \yii\helpers\Html::hiddenInput('_Category[id]', $model->getId(), [
+			'id' => 'Category_id'
 		]) ?>
 
 		<?= $form->field($model, 'name')->textInput(['maxlength' => true]) ?>

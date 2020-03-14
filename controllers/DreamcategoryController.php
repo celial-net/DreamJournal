@@ -285,7 +285,7 @@ class DreamcategoryController extends BaseController
 			$wordToCategory = WordToCategory::find()->andWhere(['word_id' => $word->id])->andWhere(['category_id' => $id])->one();
 			if($wordToCategory)
 			{
-				$wordToCategory['certainty'] = $wordToCategory->certainty;
+				$wordWithCertainty['certainty'] = $wordToCategory->certainty;
 			}
 			$wordData[] = $wordWithCertainty;
 		}
