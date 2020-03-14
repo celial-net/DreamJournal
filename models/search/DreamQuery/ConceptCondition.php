@@ -3,7 +3,14 @@
 
 namespace app\models\search\DreamQuery;
 
-
+/**
+ * Class ConceptCondition
+ *
+ * The concept condition is only going to search for a category by the words instead of direct tagging.
+ * Needs to be refactored.
+ *
+ * @package app\models\search\DreamQuery
+ */
 class ConceptCondition extends QueryCondition
 {
 	/**
@@ -13,8 +20,8 @@ class ConceptCondition extends QueryCondition
 	 */
 	public function getSql(): string
 	{
-		$conceptId = trim($this->getValue());
-		if($conceptId)
+		$categoryId = trim($this->getValue());
+		if($categoryId)
 		{
 			$not = "";
 			if($this->getQueryOperator() == self::OPERATOR_NOT_EQUALS)
@@ -22,19 +29,19 @@ class ConceptCondition extends QueryCondition
 				$not = "NOT ";
 			}
 
-			$conceptParam = $this->addParam($conceptId);
+			$categoryParam = $this->addParam($categoryId);
 			return $this->getOperator() . " " . $not . "EXISTS(
 	SELECT
 		1
 	FROM
-		freud.concept
+		dj.dream_category
 	INNER JOIN
-		freud.word_to_concept w2c ON w2c.concept_id = concept.id
+		dj.word_to_category w2c ON w2c.category_id = category.id
 	INNER JOIN
 		freud.dream_word_freq dwf ON dwf.word_id = w2c.word_id
 	WHERE
 		dwf.dream_id = dream.id
-		AND concept.id = {$conceptParam}
+		AND category.id = {$categoryParam}
 )
 			";
 		}

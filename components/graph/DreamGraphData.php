@@ -109,26 +109,33 @@ class DreamGraphData
 		return $dreamCountDataByDay;
 	}
 
+	/**
+	 * Doesn't actually return dreams by concept
+	 * but dreams by category using words instead of direct tagging.
+	 *
+	 * @return array
+	 * @throws \yii\db\Exception
+	 */
 	public function getDreamCountByConcept(): array
 	{
 		$sql = "
 			SELECT
-				concept.name AS 'name',
+				category.name AS 'name',
 				COUNT(dream.id) AS 'count'
 			FROM
 				dj.dream dream
 			INNER JOIN
 				freud.dream_word_freq dwf ON dwf.dream_id = dream.id
 			INNER JOIN
-				freud.word_to_concept w2c ON w2c.word_id = dwf.word_id
+				freud.word_to_category w2c ON w2c.word_id = dwf.word_id
 			INNER JOIN
-				freud.concept concept ON concept.id = w2c.concept_id
+				dj.dream_category category ON category.id = w2c.category_id
 			WHERE
 		  		{$this->getUserCondition()}
 			GROUP BY
-				concept.id
+				category.id
 			ORDER BY
-				concept.name ASC
+				category.name ASC
 			;
 		";
 		$dreamCountData = \Yii::$app->getDb()->createCommand($sql)->queryAll();

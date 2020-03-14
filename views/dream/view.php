@@ -76,22 +76,6 @@
 	<hr>
 	<div class="row col-lg-12">
 		<div class="form-group">
-			<label>Concepts</label>
-			<div>
-				<?php
-				echo '<ul>';
-				foreach($dream->getConcepts() as $concept)
-				{
-					echo '<li>' . $concept->name . '</li>';
-				}
-				echo '</ul>';
-				?>
-			</div>
-		</div>
-	</div>
-	<hr>
-	<div class="row col-lg-12">
-		<div class="form-group">
 			<div>
 				<?=$this->renderFile('@app/views/dream/related.php', ['canFilter' => true, 'formAction' => '/search/related/' . $dream->getId(), 'searchOnLoad' => true, 'resultsPerPage' => $resultsPerPage])?>
 			</div>

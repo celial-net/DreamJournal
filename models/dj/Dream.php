@@ -2,10 +2,8 @@
 
 namespace app\models\dj;
 
-use app\models\freud\Concept;
 use Rhumsaa\Uuid\Uuid;
 use Yii;
-use yii\db\ActiveQuery;
 
 /**
  * This is the model class for table "dj.dream".
@@ -178,42 +176,7 @@ class Dream extends \yii\db\ActiveRecord
 	}
 
 	/**
-	 * Gets all of the concepts that the dream contains ordered by relevance.
-	 *
-	 * @return Concept[]
-	 */
-	public function getConcepts(): array
-	{
-		$sql = "
-			select
-				z.*
-			from
-			(
-				select
-					concept.*,
-					SUM(dwf.frequency) as 'freq'
-				from
-					freud.concept
-				inner join
-					freud.word_to_concept w2c on w2c.concept_id = concept.id
-				inner join
-					freud.dream_word_freq dwf on(
-						dwf.dream_id = :dream_id
-						and w2c.word_id = dwf.word_id
-					)
-				group by
-					concept.id
-			) z
-			order by
-				z.freq DESC
-			;
-		";
-
-		return Concept::findBySql($sql, [':dream_id' => $this->id])->all();
-	}
-
-	/**
-	 * Finds related dreams based on the concepts in this dream.
+	 * Finds related dreams based on the category words in this dream.
 	 *
 	 * @param bool $sameUser
 	 * @return Dream[]
@@ -290,9 +253,9 @@ FROM
 			INNER JOIN
 				freud.dream_word_freq dwf ON dwf.dream_id = dream.id
 			INNER JOIN
-				freud.word_to_concept w2c ON w2c.word_id = dwf.word_id
+				dj.word_to_category w2c ON w2c.word_id = dwf.word_id
 			INNER JOIN
-				freud.concept concept ON concept.id = w2c.concept_id
+				dj.dream_category category ON category.id = w2c.category_id
 			INNER JOIN
 			(
 				SELECT
@@ -308,16 +271,16 @@ FROM
 				SELECT
 					dream.id AS 'dream_id',
 					dream.title AS 'dream_title',
-					w2c.concept_id AS 'concept_id',
+					w2c.category_id AS 'category_id',
 					(SUM(dwf.frequency * w2c.certainty) * total_words.total) AS 'weight'
 				FROM
 					dj.dream dream
 				INNER JOIN
 					freud.dream_word_freq dwf ON dwf.dream_id = dream.id
 				INNER JOIN
-					freud.word_to_concept w2c ON w2c.word_id = dwf.word_id
+					dj.word_to_category w2c ON w2c.word_id = dwf.word_id
 				INNER JOIN
-					freud.concept concept ON concept.id = w2c.concept_id
+					dj.dream_category category ON category.id = w2c.category_id
 				INNER JOIN
 				(
 					SELECT
@@ -330,9 +293,9 @@ FROM
 				) total_words ON total_words.dream_id = dream.id
 				GROUP BY
 					dream.id,
-					w2c.concept_id
+					w2c.category_id
 			) related_dream_weight ON (
-				related_dream_weight.concept_id = w2c.concept_id
+				related_dream_weight.category_id = w2c.category_id
 				AND related_dream_weight.dream_id != dream.id
 			)
 			WHERE
@@ -359,55 +322,5 @@ ORDER BY
 		print "\n";*/
 
 		return self::findBySql($sql, $params)->all();
-
-		/*$concepts = $this->getConcepts();
-		return self::findByConcepts($concepts)->all();*/
-	}
-
-	/**
-	 * Finds dreams by multiple concepts.
-	 * This is useful for related dreams.
-	 *
-	 * @param Concept[] $concepts
-	 * @return DreamQuery
-	 */
-	public static function findByConcepts(array $concepts): DreamQuery
-	{
-		$conceptIds = array_column($concepts, 'id');
-
-		//If there aren't any concepts, use -1 so that we usage is consistent
-		if(!$conceptIds)
-		{
-			$conceptIds = [-1];
-		}
-
-		$conceptIdsSql = implode(', ', $conceptIds);
-
-		$sql = "
-			select
-				z.*
-			from
-			(
-				select
-					dream.*,
-					SUM(dwf.frequency) as 'freq'
-				from
-					dj.dream
-				inner join
-					freud.dream_word_freq dwf on dwf.dream_id = dream.id
-				inner join
-					freud.word_to_concept d2c on(
-						d2c.concept_id IN($conceptIdsSql)
-						and d2c.word_id = dwf.word_id
-					)
-				group by
-					dream.id
-			) z
-			order by
-				z.freq DESC
-			;
-		";
-
-		return Dream::findBySql($sql);
 	}
 }
