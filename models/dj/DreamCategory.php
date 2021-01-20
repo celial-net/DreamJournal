@@ -11,6 +11,7 @@ use Yii;
  *
  * @property int $id
  * @property string|null $name
+ * @property bool $hidden;
  * @property Word[] $words
  */
 class DreamCategory extends \yii\db\ActiveRecord
@@ -31,6 +32,7 @@ class DreamCategory extends \yii\db\ActiveRecord
         return [
             [['name'], 'string', 'max' => 255],
             [['name'], 'unique'],
+			[['hidden'], 'boolean']
         ];
     }
 
@@ -42,6 +44,7 @@ class DreamCategory extends \yii\db\ActiveRecord
         return [
             'id' => 'ID',
             'name' => 'Name',
+			'hidden' => 'Hidden'
         ];
     }
 
@@ -59,6 +62,14 @@ class DreamCategory extends \yii\db\ActiveRecord
 	public function getName()
 	{
 		return $this->name;
+	}
+
+	/**
+	 * @return bool
+	 */
+	public function isHidden(): bool
+	{
+		return (bool) $this->hidden;
 	}
 
     /**

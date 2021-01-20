@@ -59,7 +59,7 @@ class DreamcategoryController extends BaseController
         $type = $request->getQueryParam('type');
 		if($type == 'json')
 		{
-			return $this->asJson(DreamCategory::find()->all());
+			return $this->asJson(DreamCategory::find()->hidden(false)->all());
 		}
         else
 		{
@@ -242,6 +242,8 @@ class DreamcategoryController extends BaseController
 			{
 				$this->addFlash(new Flash('Failed to save category.', Flash::FAILURE));
 			}
+
+			return $this->redirect(['view', 'id' => $model->id]);
 		}
 
         return $this->render('_form', [

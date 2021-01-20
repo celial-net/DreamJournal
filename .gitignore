@@ -34,3 +34,6 @@ tests/_support/_generated
 
 # Custom config file
 config/settings.json
+
+# Sheldon's ignores
+node_modules

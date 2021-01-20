@@ -16,7 +16,8 @@ use yii\helpers\Html;
 
 		<?= $form->field($exportForm, 'format')->dropDownList([
 			'json' => 'JSON',
-			'html' => 'HTML'
+			'html' => 'HTML',
+			'json-dc' => 'JSON (DreamCloud Format)'
 		]) ?>
 
 		<?= $form->field($exportForm, 'start_date')->textInput([

@@ -9,10 +9,10 @@ namespace app\models\dj;
  */
 class DreamCategoryQuery extends \yii\db\ActiveQuery
 {
-    /*public function active()
+    public function hidden(bool $hidden = true)
     {
-        return $this->andWhere('[[status]]=1');
-    }*/
+        return $this->andWhere('[[hidden]]=:hidden', [':hidden' => $hidden]);
+    }
 
     /**
      * {@inheritdoc}

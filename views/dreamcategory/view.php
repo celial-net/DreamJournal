@@ -15,6 +15,10 @@ use yii\widgets\DetailView;
 			'attributes' => [
 				'id',
 				'name',
+				[
+					'attribute' => 'hidden',
+					'value' => $model->isHidden() ? 'Yes' : 'No'
+				]
 			],
 		]) ?>
 	</div>

@@ -20,6 +20,8 @@ use yii\widgets\ActiveForm;
 
 		<?= $form->field($model, 'name')->textInput(['maxlength' => true]) ?>
 
+		<?= $form->field($model, 'hidden')->checkbox([]) ?>
+
 		<div class="form-group">
 			<label class="control-label">Words</label>
 			<?=$this->renderFile('@app/views/dreamcategory/word-list.php', [

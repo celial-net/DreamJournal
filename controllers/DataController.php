@@ -61,10 +61,28 @@ class DataController extends BaseController
 		{
 			$exportForm->load($request->post());
 
-			if($exportForm->format == 'json')
+			if($exportForm->format == 'json' || $exportForm->format == 'json-dc')
 			{
 				//Send JSON data
 				$dreams = $exportForm->getDreamData();
+
+				//Export for DreamCloud
+				if($exportForm->format == 'json-dc')
+				{
+					$dreamCloudData = [];
+					foreach($dreams as $dream)
+					{
+						$dateTime = new \DateTime($dream['dreamt_at']);
+						$dateTime->setTimezone(new \DateTimeZone('UTC'));
+						$dreamCloudData[] = [
+							'title'		=> $dream['title'],
+							'content'	=> $dream['description'],
+							'date'		=> $dateTime->format('Y-m-d\TH:i:s.u\Z')
+						];
+					}
+					$dreams = ['dreams' => $dreamCloudData];
+				}
+
 				$file = tmpfile();
 				fwrite($file, Json::encode($dreams, JSON_PRETTY_PRINT));
 				return \Yii::$app->response->sendStreamAsFile($file, 'dream-export-' . date('Y-m-d') . '.json');
